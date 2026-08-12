@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alonei Abba Go On Stop - No Gwene</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #121212; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+    .card { background: #1e1e1e; border-radius: 16px; padding: 25px; width: 100%; max-width: 480px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center; border: 1px solid #333; }
+    h1 { color: #ff3e3e; margin: 0 0 5px 0; }
+    p.subtitle { color: #aaa; margin-bottom: 20px; }
+    input, select { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #444; background: #2a2a2a; color: #fff; font-size: 15px; }
+    button { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #ff3e3e; color: white; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; }
+    button:hover { background: #e03232; }
+    button:disabled { background: #333; color: #777; cursor: not-allowed; }
+    .btn-small { width: auto; padding: 6px 12px; font-size: 13px; background: #0088cc; }
+    .btn-small:hover { background: #006699; }
+    .hidden { display: none; }
+    
+    .stats-container { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 10px; }
+    .stat-card { flex: 1; background: #282828; padding: 12px; border-radius: 8px; border: 1px solid #3d3d3d; }
+    .stat-card .number { font-size: 22px; font-weight: bold; color: #ffcc00; margin-top: 5px; }
+    .timer-box { font-size: 24px; font-weight: bold; color: #00ffcc; margin: 10px 0; background: #282828; padding: 12px; border-radius: 8px; border: 1px solid #3d3d3d; }
+    
+    /* תיבת עידודים נכנסים */
+    .inbox-box { background: #1a2634; border: 1px solid #0088cc; padding: 12px; border-radius: 8px; margin: 15px 0; text-align: right; }
+    .inbox-title { color: #00aaff; font-weight: bold; margin-bottom: 8px; }
+    .msg-item { background: #223344; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; font-size: 14px; }
+    .msg-sender { font-weight: bold; color: #ffcc00; }
+    
+    .fail-button { background: transparent; border: 1px solid #ff3e3e; color: #ff3e3e; margin-top: 15px; }
+    .fail-button:hover { background: #ff3e3e; color: white; }
+    
+    .leaderboard { margin-top: 25px; text-align: right; }
+    .leaderboard h3 { border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 10px; }
+    .player-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; border-bottom: 1px solid #2a2a2a; }
+    .player-row.me { background: #2a2a1e; border-radius: 6px; padding: 10px; border: 1px solid #ffcc00; }
+    .player-pts { color: #ffcc00; font-weight: bold; }
+    
+    /* פאנל מנהל */
+    .admin-box { background: #331515; border: 1px solid #ff3e3e; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: right; }
+    .admin-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+    .admin-row input { margin-bottom: 0; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Alonei Abba Go On Stop</h1>
+    <p class="subtitle">אתגר ה-No Gwene הגדול</p>
+
+    <!-- מסך הרשמה / התחברות -->
+    <div id="auth-section">
+      <input type="text" id="username" placeholder="שם מלא" />
+      <input type="text" id="phone" placeholder="מספר טלפון (או סיסמת מנהל)" />
+      <button id="login-btn">להרשמה / התחברות</button>
+    </div>
+
+    <!-- מסך משתמש מחובר -->
+    <div id="dashboard-section" class="hidden">
+      <h2 id="welcome-msg">שלום!</h2>
+      
+      <div class="stats-container">
+        <div class="stat-card">
+          <div>🔥 רצף ימים</div>
+          <div id="streak-val" class="number">0 ימים</div>
+        </div>
+        <div class="stat-card">
+          <div>🏆 ניקוד כולל</div>
+          <div id="points-val" class="number">0</div>
+        </div>
+      </div>
+
+      <div id="timer" class="timer-box">00:00:00</div>
+
+      <!-- הודעות עידוד שנשלחו אלי -->
+      <div class="inbox-box">
+        <div class="inbox-title">💌 הודעות עידוד שקיבלת:</div>
+        <div id="inbox-list"><small style="color:#aaa;">אין הודעות חדשות</small></div>
+      </div>
+
+      <button id="fail-btn" class="fail-button">💥 נשברתי (איפוס ניקוד ורצף)</button>
+    </div>
+
+    <!-- פאנל מנהל (מוצג בסיסמה 4468800) -->
+    <div id="admin-section" class="admin-box hidden">
+      <h3 style="color:#ff3e3e; margin-top:0;">👑 פאנל מנהל</h3>
+      <p style="font-size:13px; color:#ccc;">עריכת שמות משתתפים:</p>
+      <div id="admin-users-list">טוען משתמשים...</div>
+      <button id="admin-logout" style="background:#555; margin-top:10px;">יציאה מצב מנהל</button>
+    </div>
+
+    <!-- לוח מובילים -->
+    <div class="leaderboard">
+      <h3>🏆 לוח מובילים בזמן אמת</h3>
+      <div id="leaderboard-list">טוען נתונים...</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // 🔴 הפרטים מה-Firebase שלך 🔴
+    const firebaseConfig = {
+      apiKey: "AIzaSyDd8edyyW3JLtakSSKwzu5KdNSHXiSER94",
+      authDomain: "aloneiabbago-on.firebaseapp.com",
+      projectId: "aloneiabbago-on",
+      storageBucket: "aloneiabbago-on.firebasestorage.app",
+      messagingSenderId: "213608542610",
+      appId: "1:213608542610:web:442c78168d7b763d99514b",
+      measurementId: "G-HJ22C4JM50"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const ADMIN_CODE = "4468800";
+    let currentUser = null;
+    let timerInterval = null;
+    let allUsersData = [];
+
+    const savedPhone = localStorage.getItem('user_phone');
+    if (savedPhone) {
+      if (savedPhone === ADMIN_CODE) {
+        showAdminPanel();
+      } else {
+        loadUserData(savedPhone);
+      }
+    }
+
+    // התחברות / בדיקת מנהל
+    document.getElementById('login-btn').addEventListener('click', async () => {
+      const name = document.getElementById('username').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      if (!phone) {
+        alert('נא להזין מספר טלפון או סיסמה');
+        return;
+      }
+
+      // בדיקת מנהל
+      if (phone === ADMIN_CODE) {
+        localStorage.setItem('user_phone', ADMIN_CODE);
+        showAdminPanel();
+        return;
+      }
+
+      if (!name) {
+        alert('נא למלא שם מלא');
+        return;
+      }
+
+      localStorage.setItem('user_phone', phone);
+      const userRef = doc(db, "users", phone);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          name: name,
+          phone: phone,
+          startTime: Date.now(),
+          bonusPoints: 0,
+          lastEncourageDate: "",
+          messages: []
+        });
+      }
+
+      loadUserData(phone);
+    });
+
+    // טעינת משתמש רגיל
+    async function loadUserData(phone) {
+      const userRef = doc(db, "users", phone);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        currentUser = userSnap.data();
+        document.getElementById('auth-section').classList.add('hidden');
+        document.getElementById('admin-section').classList.add('hidden');
+        document.getElementById('dashboard-section').classList.remove('hidden');
+        document.getElementById('welcome-msg').innerText = `שלום ${currentUser.name}!`;
+
+        renderMessages(currentUser.messages || []);
+        startStatsAndTimer();
+      }
+    }
+
+    // פאנל מנהל
+    function showAdminPanel() {
+      document.getElementById('auth-section').classList.add('hidden');
+      document.getElementById('dashboard-section').classList.add('hidden');
+      document.getElementById('admin-section').classList.remove('hidden');
+    }
+
+    document.getElementById('admin-logout').addEventListener('click', () => {
+      localStorage.removeItem('user_phone');
+      location.reload();
+    });
+
+    // הצגת הודעות עידוד נכנסות
+    function renderMessages(msgs) {
+      const inboxDiv = document.getElementById('inbox-list');
+      if (msgs.length === 0) {
+        inboxDiv.innerHTML = '<small style="color:#aaa;">אין הודעות חדשות</small>';
+        return;
+      }
+
+      inboxDiv.innerHTML = msgs.slice(-5).reverse().map(m => `
+        <div class="msg-item">
+          <span class="msg-sender">${m.from}:</span> "${m.text}"
+        </div>
+      `).join('');
+    }
+
+    // טיימר וחישוב נקודות
+    function startStatsAndTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+
+      timerInterval = setInterval(() => {
+        const diff = Date.now() - currentUser.startTime;
+        
+        const seconds = Math.floor((diff / 1000) % 60);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        const basePoints = Math.floor((diff / (1000 * 60 * 60 * 24)) * 100);
+        const totalPoints = basePoints + (currentUser.bonusPoints || 0);
+
+        document.getElementById('streak-val').innerText = `${days} ימים`;
+        document.getElementById('points-val').innerText = totalPoints;
+        document.getElementById('timer').innerText = `${days}d ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+      }, 1000);
+    }
+
+    function pad(n) { return n < 10 ? '0' + n : n; }
+
+    // איפוס בלחיצה על "נשברתי"
+    document.getElementById('fail-btn').addEventListener('click', async () => {
+      if (confirm('אתה בטוח שנשברת? הניקוד והרצף יתאפסו ל-0!')) {
+        const newStartTime = Date.now();
+        const updatedData = {
+          ...currentUser,
+          startTime: newStartTime,
+          bonusPoints: 0,
+          lastEncourageDate: ""
+        };
+
+        await setDoc(doc(db, "users", currentUser.phone), updatedData);
+        currentUser = updatedData;
+        startStatsAndTimer();
+      }
+    });
+
+    // שליחת עידוד לחבר
+    window.sendEncouragement = async function(targetPhone, targetName) {
+      const today = new Date().toISOString().split('T')[0];
+
+      if (currentUser.lastEncourageDate === today) {
+        alert('כבר עודדת חבר היום! אפשר לעודד שוב מחר.');
+        return;
+      }
+
+      const options = [
+        "אל תוותר! אתה חזק מזה 💪",
+        "תאמין בעצמך, עוד יום אחד קטן! 🔥",
+        "אנחנו יחד באתגר הזה, אל תישבר! 👑",
+        "גוואן מחכה, תראה לו ממה אתה עשוי! 🚀"
+      ];
+
+      const choice = prompt(
+        `בחר משפט עידוד עבור ${targetName}:\n\n` +
+        `1. ${options[0]}\n` +
+        `2. ${options[1]}\n` +
+        `3. ${options[2]}\n` +
+        `4. ${options[3]}\n\n` +
+        `או רשום משפט אישי משלך:`
+      );
+
+      if (!choice) return;
+
+      let msgText = choice;
+      if (choice === "1") msgText = options[0];
+      if (choice === "2") msgText = options[1];
+      if (choice === "3") msgText = options[2];
+      if (choice === "4") msgText = options[3];
+
+      // עדכון הניקוד של השולח (+50 נק')
+      const updatedBonus = (currentUser.bonusPoints || 0) + 50;
+      await updateDoc(doc(db, "users", currentUser.phone), {
+        bonusPoints: updatedBonus,
+        lastEncourageDate: today
+      });
+
+      // הוספת ההודעה למקבל
+      await updateDoc(doc(db, "users", targetPhone), {
+        messages: arrayUnion({
+          from: currentUser.name,
+          text: msgText,
+          date: today
+        })
+      });
+
+      currentUser.bonusPoints = updatedBonus;
+      currentUser.lastEncourageDate = today;
+
+      alert(`הודעת העידוד נשלחה ל-${targetName}! קיבלת +50 נקודות בונוס 🎉`);
+      startStatsAndTimer();
+    };
+
+    // עריכת שם ע"י מנהל
+    window.adminEditName = async function(phone) {
+      const user = allUsersData.find(u => u.phone === phone);
+      if (!user) return;
+
+      const newName = prompt(`שנה שם עבור ${user.name}:`, user.name);
+      if (newName && newName.trim() !== "") {
+        await updateDoc(doc(db, "users", phone), {
+          name: newName.trim()
+        });
+        alert('השם עודכן בהצלחה!');
+      }
+    };
+
+    // לוח מובילים ועדכון בזמן אמת
+    onSnapshot(collection(db, "users"), (snapshot) => {
+      const listDiv = document.getElementById('leaderboard-list');
+      const adminDiv = document.getElementById('admin-users-list');
+      
+      listDiv.innerHTML = '';
+      if (adminDiv) adminDiv.innerHTML = '';
+
+      allUsersData = [];
+      const today = new Date().toISOString().split('T')[0];
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const diff = Date.now() - data.startTime;
+        const basePoints = Math.floor((diff / (1000 * 60 * 60 * 24)) * 100);
+        const totalPoints = basePoints + (data.bonusPoints || 0);
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        allUsersData.push({
+          ...data,
+          totalPoints: totalPoints,
+          days: days
+        });
+      });
+
+      // מיון לפי ניקוד
+      allUsersData.sort((a, b) => b.totalPoints - a.totalPoints);
+
+      // עדכון לוח מובילים
+      allUsersData.forEach((user, index) => {
+        const isMe = currentUser && currentUser.phone === user.phone;
+        const canEncourage = currentUser && !isMe && currentUser.lastEncourageDate !== today;
+
+        const row = document.createElement('div');
+        row.className = `player-row ${isMe ? 'me' : ''}`;
+        row.innerHTML = `
+          <div>
+            <strong>#${index + 1}</strong> ${user.name} ${isMe ? '(אתה)' : ''}
+            <br><small style="color:#aaa;">${user.days} ימי רצף</small>
+          </div>
+          <div style="text-align:left;">
+            <span class="player-pts">${user.totalPoints} pts</span>
+            ${!isMe && currentUser ? `
+              <br><button class="btn-small" ${canEncourage ? '' : 'disabled'} 
+                onclick="sendEncouragement('${user.phone}', '${user.name}')">
+                📣 עודד
+              </button>
+            ` : ''}
+          </div>
+        `;
+        listDiv.appendChild(row);
+
+        // עדכון לרשימת מנהל
+        if (adminDiv) {
+          const adminRow = document.createElement('div');
+          adminRow.className = 'admin-row';
+          adminRow.innerHTML = `
+            <span style="flex:1;">${user.name} (${user.phone})</span>
+            <button class="btn-small" style="background:#ff3e3e;" onclick="adminEditName('${user.phone}')">ערוך שם</button>
+          `;
+          adminDiv.appendChild(adminRow);
+        }
+      });
+
+      // עדכון בזמן אמת של הודעות עבור המשתמש המחובר
+      if (currentUser) {
+        const meLatest = allUsersData.find(u => u.phone === currentUser.phone);
+        if (meLatest && meLatest.messages) {
+          renderMessages(meLatest.messages);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
