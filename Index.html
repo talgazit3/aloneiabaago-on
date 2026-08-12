@@ -1,401 +1,942 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alonei Abba Go On Stop - No Gwene</title>
-  <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #121212; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-    .card { background: #1e1e1e; border-radius: 16px; padding: 25px; width: 100%; max-width: 480px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center; border: 1px solid #333; }
-    h1 { color: #ff3e3e; margin: 0 0 5px 0; }
-    p.subtitle { color: #aaa; margin-bottom: 20px; }
-    input, select { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #444; background: #2a2a2a; color: #fff; font-size: 15px; }
-    button { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #ff3e3e; color: white; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; }
-    button:hover { background: #e03232; }
-    button:disabled { background: #333; color: #777; cursor: not-allowed; }
-    .btn-small { width: auto; padding: 6px 12px; font-size: 13px; background: #0088cc; }
-    .btn-small:hover { background: #006699; }
-    .hidden { display: none; }
-    
-    .stats-container { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 10px; }
-    .stat-card { flex: 1; background: #282828; padding: 12px; border-radius: 8px; border: 1px solid #3d3d3d; }
-    .stat-card .number { font-size: 22px; font-weight: bold; color: #ffcc00; margin-top: 5px; }
-    .timer-box { font-size: 24px; font-weight: bold; color: #00ffcc; margin: 10px 0; background: #282828; padding: 12px; border-radius: 8px; border: 1px solid #3d3d3d; }
-    
-    /* תיבת עידודים נכנסים */
-    .inbox-box { background: #1a2634; border: 1px solid #0088cc; padding: 12px; border-radius: 8px; margin: 15px 0; text-align: right; }
-    .inbox-title { color: #00aaff; font-weight: bold; margin-bottom: 8px; }
-    .msg-item { background: #223344; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; font-size: 14px; }
-    .msg-sender { font-weight: bold; color: #ffcc00; }
-    
-    .fail-button { background: transparent; border: 1px solid #ff3e3e; color: #ff3e3e; margin-top: 15px; }
-    .fail-button:hover { background: #ff3e3e; color: white; }
-    
-    .leaderboard { margin-top: 25px; text-align: right; }
-    .leaderboard h3 { border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 10px; }
-    .player-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; border-bottom: 1px solid #2a2a2a; }
-    .player-row.me { background: #2a2a1e; border-radius: 6px; padding: 10px; border: 1px solid #ffcc00; }
-    .player-pts { color: #ffcc00; font-weight: bold; }
-    
-    /* פאנל מנהל */
-    .admin-box { background: #331515; border: 1px solid #ff3e3e; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: right; }
-    .admin-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
-    .admin-row input { margin-bottom: 0; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Alonei Abba • Go On Stop – No Gwene</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#12161b;
+    --bg-panel:#1b2129;
+    --bg-panel-2:#212933;
+    --accent-gold:#e3a542;
+    --accent-gold-dim:#a67b34;
+    --accent-sage:#6f9c86;
+    --text-primary:#f4efe6;
+    --text-muted:#9aa7b0;
+    --border:rgba(244,239,230,0.09);
+    --danger:#c1554d;
+    --danger-dim:#8f3f3a;
+    --radius:16px;
+    --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(227,165,66,0.10), transparent 60%),
+      linear-gradient(180deg, var(--bg-deep), #0d1013 100%);
+    color:var(--text-primary);
+    font-family:'Heebo',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Rubik',sans-serif;}
+  .tabular{font-variant-numeric:tabular-nums;}
+  button{font-family:inherit;cursor:pointer;}
+  input{font-family:inherit;}
+
+  /* ---------- horizon motif ---------- */
+  .horizon{
+    position:relative;
+    height:64px;
+    overflow:hidden;
+    opacity:0.9;
+  }
+  .horizon svg{position:absolute;bottom:0;left:0;width:100%;height:64px;}
+
+  /* ---------- layout shells ---------- */
+  #app{max-width:960px;margin:0 auto;padding:0 16px 60px;}
+  .hidden{display:none !important;}
+
+  /* ---------- login ---------- */
+  #loginScreen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .login-card{
+    width:100%;
+    max-width:420px;
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:32px 28px 28px;
+    box-shadow:var(--shadow);
+    text-align:center;
+  }
+  .brand-eyebrow{
+    color:var(--accent-gold);
+    font-size:13px;
+    letter-spacing:0.12em;
+    font-weight:600;
+    text-transform:uppercase;
+  }
+  .brand-title{
+    font-size:28px;
+    font-weight:800;
+    margin:6px 0 4px;
+    line-height:1.25;
+  }
+  .brand-sub{
+    color:var(--text-muted);
+    font-size:14px;
+    margin-bottom:26px;
+  }
+  .field{
+    text-align:right;
+    margin-bottom:14px;
+  }
+  .field label{
+    display:block;
+    font-size:13px;
+    color:var(--text-muted);
+    margin-bottom:6px;
+  }
+  .field input{
+    width:100%;
+    padding:13px 14px;
+    background:#0f1318;
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--text-primary);
+    font-size:15px;
+    outline:none;
+    transition:border-color .15s;
+  }
+  .field input:focus{border-color:var(--accent-gold);}
+  .btn{
+    border:none;
+    border-radius:10px;
+    padding:13px 18px;
+    font-size:15px;
+    font-weight:700;
+    transition:transform .12s, filter .12s;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{
+    width:100%;
+    background:linear-gradient(180deg, var(--accent-gold), var(--accent-gold-dim));
+    color:#171207;
+    margin-top:6px;
+  }
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text-primary);
+  }
+  .btn-ghost:hover{border-color:var(--accent-gold);}
+  .btn-danger{
+    background:linear-gradient(180deg, var(--danger), var(--danger-dim));
+    color:#fff3f0;
+  }
+  .btn-sm{padding:8px 12px;font-size:13px;border-radius:8px;}
+  .login-hint{
+    margin-top:16px;
+    font-size:12px;
+    color:var(--text-muted);
+    line-height:1.6;
+  }
+
+  /* ---------- header ---------- */
+  header.top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 0 10px;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .title-block h1{
+    font-size:20px;
+    margin:0 0 2px;
+    font-weight:800;
+  }
+  .title-block .sub{font-size:12.5px;color:var(--text-muted);}
+  .user-chip{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--bg-panel);
+    border:1px solid var(--border);
+    padding:8px 14px;
+    border-radius:100px;
+    font-size:13.5px;
+  }
+  .user-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--accent-sage);}
+  .user-chip button{
+    background:none;border:none;color:var(--text-muted);font-size:12px;
+    text-decoration:underline;padding:0;
+  }
+
+  /* ---------- tabs ---------- */
+  .tabs{
+    display:flex;
+    gap:6px;
+    background:var(--bg-panel);
+    border:1px solid var(--border);
+    padding:5px;
+    border-radius:12px;
+    margin-bottom:22px;
+  }
+  .tab-btn{
+    flex:1;
+    background:transparent;
+    border:none;
+    color:var(--text-muted);
+    padding:10px 8px;
+    border-radius:9px;
+    font-size:13.5px;
+    font-weight:600;
+    transition:all .15s;
+  }
+  .tab-btn.active{
+    background:linear-gradient(180deg, var(--accent-gold), var(--accent-gold-dim));
+    color:#171207;
+  }
+
+  .panel{
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px;
+    margin-bottom:18px;
+    box-shadow:var(--shadow);
+  }
+
+  /* ---------- dashboard hero ---------- */
+  .hero{
+    display:flex;
+    align-items:center;
+    gap:28px;
+    flex-wrap:wrap;
+    justify-content:center;
+    text-align:center;
+  }
+  .ring-wrap{position:relative;width:190px;height:190px;flex-shrink:0;}
+  .ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .ring-bg{fill:none;stroke:rgba(244,239,230,0.08);stroke-width:10;}
+  .ring-fg{fill:none;stroke:url(#sunGrad);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .4s ease;}
+  .ring-center{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .ring-center .streak-num{font-size:38px;font-weight:900;line-height:1;}
+  .ring-center .streak-label{font-size:11.5px;color:var(--text-muted);margin-top:4px;}
+
+  .timer-block{min-width:220px;}
+  .timer-label{font-size:12.5px;color:var(--text-muted);margin-bottom:8px;letter-spacing:.03em;}
+  .timer-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+  }
+  .timer-cell{
+    background:#0f1318;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 4px;
+  }
+  .timer-cell .num{font-size:22px;font-weight:800;color:var(--accent-gold);}
+  .timer-cell .unit{font-size:10.5px;color:var(--text-muted);margin-top:2px;}
+
+  .score-row{
+    display:flex;
+    justify-content:center;
+    gap:24px;
+    margin-top:20px;
+    flex-wrap:wrap;
+  }
+  .score-item{text-align:center;}
+  .score-item .val{font-size:24px;font-weight:800;}
+  .score-item .lbl{font-size:11.5px;color:var(--text-muted);margin-top:2px;}
+  .score-item.total .val{color:var(--accent-gold);}
+
+  .break-row{
+    text-align:center;
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px dashed var(--border);
+  }
+  .break-row p{font-size:12.5px;color:var(--text-muted);margin:0 0 10px;}
+
+  /* ---------- inbox ---------- */
+  .section-title{
+    font-size:15px;font-weight:700;margin:0 0 12px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .inbox-list{display:flex;flex-direction:column;gap:10px;max-height:340px;overflow-y:auto;}
+  .inbox-item{
+    background:#0f1318;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px 14px;
+  }
+  .inbox-item .from{font-size:12.5px;color:var(--accent-sage);font-weight:700;margin-bottom:4px;}
+  .inbox-item .txt{font-size:14px;line-height:1.5;}
+  .inbox-item .time{font-size:10.5px;color:var(--text-muted);margin-top:6px;}
+  .empty-state{
+    text-align:center;color:var(--text-muted);font-size:13.5px;padding:26px 10px;
+  }
+
+  /* ---------- leaderboard ---------- */
+  .lb-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#0f1318;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px 14px;
+    margin-bottom:10px;
+    transition:border-color .15s;
+  }
+  .lb-row.me{border-color:var(--accent-gold);background:linear-gradient(90deg, rgba(227,165,66,0.12), #0f1318 60%);}
+  .lb-rank{
+    width:34px;height:34px;flex-shrink:0;
+    border-radius:50%;
+    background:var(--bg-panel-2);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:13px;color:var(--text-muted);
+    border:1px solid var(--border);
+  }
+  .lb-rank.top1{background:linear-gradient(180deg,#f2c265,#c98f2a);color:#1a1300;border-color:transparent;}
+  .lb-rank.top2{background:linear-gradient(180deg,#d9d9d9,#a3a3a3);color:#1a1a1a;border-color:transparent;}
+  .lb-rank.top3{background:linear-gradient(180deg,#d69a6a,#a5643a);color:#1a1300;border-color:transparent;}
+  .lb-info{flex:1;min-width:0;}
+  .lb-name{font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .lb-meta{font-size:11.5px;color:var(--text-muted);margin-top:2px;}
+  .lb-score{text-align:center;flex-shrink:0;min-width:64px;}
+  .lb-score .n{font-size:17px;font-weight:800;color:var(--accent-gold);}
+  .lb-score .l{font-size:9.5px;color:var(--text-muted);}
+  .encourage-btn{
+    flex-shrink:0;
+    background:var(--bg-panel-2);
+    border:1px solid var(--border);
+    color:var(--text-primary);
+    padding:9px 12px;
+    border-radius:9px;
+    font-size:12.5px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .encourage-btn:not(:disabled):hover{border-color:var(--accent-sage);color:var(--accent-sage);}
+  .encourage-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+  /* ---------- admin ---------- */
+  .admin-row{
+    display:flex;align-items:center;gap:10px;
+    background:#0f1318;border:1px solid var(--border);border-radius:10px;
+    padding:10px 12px;margin-bottom:8px;flex-wrap:wrap;
+  }
+  .admin-row input{
+    flex:1;min-width:140px;
+    background:#161b21;border:1px solid var(--border);border-radius:8px;
+    padding:8px 10px;color:var(--text-primary);font-size:13.5px;
+  }
+  .admin-row .phone{color:var(--text-muted);font-size:12px;min-width:90px;}
+
+  /* ---------- modal ---------- */
+  .modal-backdrop{
+    position:fixed;inset:0;background:rgba(8,10,12,0.72);
+    display:flex;align-items:center;justify-content:center;
+    z-index:100;padding:18px;
+    backdrop-filter:blur(2px);
+  }
+  .modal{
+    width:100%;max-width:420px;
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:24px;
+    box-shadow:var(--shadow);
+  }
+  .modal h3{margin:0 0 4px;font-size:17px;}
+  .modal .modal-sub{font-size:12.5px;color:var(--text-muted);margin-bottom:16px;}
+  .phrase-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;max-height:220px;overflow-y:auto;}
+  .phrase-opt{
+    text-align:right;
+    background:#0f1318;border:1px solid var(--border);border-radius:9px;
+    padding:10px 12px;font-size:13.5px;color:var(--text-primary);
+  }
+  .phrase-opt.selected{border-color:var(--accent-sage);color:var(--accent-sage);}
+  .modal textarea{
+    width:100%;min-height:70px;background:#0f1318;border:1px solid var(--border);
+    border-radius:9px;color:var(--text-primary);padding:10px 12px;font-size:13.5px;
+    resize:vertical;outline:none;font-family:inherit;
+  }
+  .modal textarea:focus{border-color:var(--accent-gold);}
+  .modal-actions{display:flex;gap:10px;margin-top:16px;}
+  .modal-actions .btn{flex:1;}
+
+  /* ---------- toast ---------- */
+  #toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);
+    background:var(--bg-panel-2);border:1px solid var(--accent-gold);
+    color:var(--text-primary);padding:12px 20px;border-radius:100px;
+    font-size:13.5px;font-weight:600;
+    box-shadow:var(--shadow);
+    z-index:200;
+    transition:transform .3s ease;
+  }
+  #toast.show{transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:520px){
+    .hero{gap:18px;}
+    .ring-wrap{width:150px;height:150px;}
+    .ring-center .streak-num{font-size:30px;}
+    .timer-cell .num{font-size:18px;}
+    .score-row{gap:14px;}
+  }
+</style>
 </head>
 <body>
 
-  <div class="card">
-    <h1>Alonei Abba Go On Stop</h1>
-    <p class="subtitle">אתגר ה-No Gwene הגדול</p>
+<div class="horizon">
+  <svg viewBox="0 0 1000 64" preserveAspectRatio="none">
+    <path d="M0,50 L120,30 L260,44 L400,18 L560,40 L720,26 L860,46 L1000,32 L1000,64 L0,64 Z" fill="#1a2028"/>
+    <circle cx="500" cy="24" r="10" fill="#e3a542" opacity="0.85"/>
+  </svg>
+</div>
 
-    <!-- מסך הרשמה / התחברות -->
-    <div id="auth-section">
-      <input type="text" id="username" placeholder="שם מלא" />
-      <input type="text" id="phone" placeholder="מספר טלפון (או סיסמת מנהל)" />
-      <button id="login-btn">להרשמה / התחברות</button>
-    </div>
+<div id="app">
 
-    <!-- מסך משתמש מחובר -->
-    <div id="dashboard-section" class="hidden">
-      <h2 id="welcome-msg">שלום!</h2>
-      
-      <div class="stats-container">
-        <div class="stat-card">
-          <div>🔥 רצף ימים</div>
-          <div id="streak-val" class="number">0 ימים</div>
+  <!-- ===================== LOGIN ===================== -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="brand-eyebrow">אלוני אבא</div>
+      <h1 class="brand-title">Go On Stop<br>No Gwene</h1>
+      <p class="brand-sub">האתגר הקבוצתי שלנו — כל יום שעובר הוא ניצחון</p>
+
+      <form id="loginForm">
+        <div class="field">
+          <label for="nameInput">שם מלא</label>
+          <input id="nameInput" type="text" placeholder="לדוגמה: ישראל ישראלי" autocomplete="name">
         </div>
-        <div class="stat-card">
-          <div>🏆 ניקוד כולל</div>
-          <div id="points-val" class="number">0</div>
+        <div class="field">
+          <label for="phoneInput">מספר טלפון</label>
+          <input id="phoneInput" type="tel" placeholder="050-0000000" autocomplete="tel">
         </div>
-      </div>
-
-      <div id="timer" class="timer-box">00:00:00</div>
-
-      <!-- הודעות עידוד שנשלחו אלי -->
-      <div class="inbox-box">
-        <div class="inbox-title">💌 הודעות עידוד שקיבלת:</div>
-        <div id="inbox-list"><small style="color:#aaa;">אין הודעות חדשות</small></div>
-      </div>
-
-      <button id="fail-btn" class="fail-button">💥 נשברתי (איפוס ניקוד ורצף)</button>
-    </div>
-
-    <!-- פאנל מנהל (מוצג בסיסמה 4468800) -->
-    <div id="admin-section" class="admin-box hidden">
-      <h3 style="color:#ff3e3e; margin-top:0;">👑 פאנל מנהל</h3>
-      <p style="font-size:13px; color:#ccc;">עריכת שמות משתתפים:</p>
-      <div id="admin-users-list">טוען משתמשים...</div>
-      <button id="admin-logout" style="background:#555; margin-top:10px;">יציאה מצב מנהל</button>
-    </div>
-
-    <!-- לוח מובילים -->
-    <div class="leaderboard">
-      <h3>🏆 לוח מובילים בזמן אמת</h3>
-      <div id="leaderboard-list">טוען נתונים...</div>
+        <button type="submit" class="btn btn-primary">כניסה לאתגר</button>
+      </form>
+      <div class="login-hint">מספר הטלפון משמש לזיהוי שלך במערכת ונשמר במכשיר זה לכניסה אוטומטית בפעם הבאה.</div>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  <!-- ===================== MAIN APP ===================== -->
+  <div id="mainScreen" class="hidden">
+    <header class="top">
+      <div class="title-block">
+        <h1>Go On Stop – No Gwene</h1>
+        <div class="sub">אלוני אבא · אתגר קבוצתי</div>
+      </div>
+      <div class="user-chip">
+        <span class="dot"></span>
+        <span id="chipName">—</span>
+        <button id="logoutBtn">התנתקות</button>
+      </div>
+    </header>
 
-    // 🔴 הפרטים מה-Firebase שלך 🔴
-    const firebaseConfig = {
-      apiKey: "AIzaSyDd8edyyW3JLtakSSKwzu5KdNSHXiSER94",
-      authDomain: "aloneiabbago-on.firebaseapp.com",
-      projectId: "aloneiabbago-on",
-      storageBucket: "aloneiabbago-on.firebasestorage.app",
-      messagingSenderId: "213608542610",
-      appId: "1:213608542610:web:442c78168d7b763d99514b",
-      measurementId: "G-HJ22C4JM50"
-    };
+    <div class="tabs" id="tabs">
+      <button class="tab-btn active" data-tab="dashboard">הבקרה שלי</button>
+      <button class="tab-btn" data-tab="leaderboard">לוח מובילים</button>
+      <button class="tab-btn hidden" id="adminTabBtn" data-tab="admin">ניהול</button>
+    </div>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    <!-- ---- DASHBOARD ---- -->
+    <section id="tab-dashboard">
+      <div class="panel">
+        <div class="hero">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#f2c265"/>
+                  <stop offset="100%" stop-color="#e3a542"/>
+                </linearGradient>
+              </defs>
+              <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+              <circle class="ring-fg" id="ringFg" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="264"></circle>
+            </svg>
+            <div class="ring-center">
+              <div class="streak-num tabular" id="streakNum">0</div>
+              <div class="streak-label">ימי רצף</div>
+            </div>
+          </div>
 
-    const ADMIN_CODE = "4468800";
-    let currentUser = null;
-    let timerInterval = null;
-    let allUsersData = [];
-
-    const savedPhone = localStorage.getItem('user_phone');
-    if (savedPhone) {
-      if (savedPhone === ADMIN_CODE) {
-        showAdminPanel();
-      } else {
-        loadUserData(savedPhone);
-      }
-    }
-
-    // התחברות / בדיקת מנהל
-    document.getElementById('login-btn').addEventListener('click', async () => {
-      const name = document.getElementById('username').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-
-      if (!phone) {
-        alert('נא להזין מספר טלפון או סיסמה');
-        return;
-      }
-
-      // בדיקת מנהל
-      if (phone === ADMIN_CODE) {
-        localStorage.setItem('user_phone', ADMIN_CODE);
-        showAdminPanel();
-        return;
-      }
-
-      if (!name) {
-        alert('נא למלא שם מלא');
-        return;
-      }
-
-      localStorage.setItem('user_phone', phone);
-      const userRef = doc(db, "users", phone);
-      const userSnap = await getDoc(userRef);
-
-      if (!userSnap.exists()) {
-        await setDoc(userRef, {
-          name: name,
-          phone: phone,
-          startTime: Date.now(),
-          bonusPoints: 0,
-          lastEncourageDate: "",
-          messages: []
-        });
-      }
-
-      loadUserData(phone);
-    });
-
-    // טעינת משתמש רגיל
-    async function loadUserData(phone) {
-      const userRef = doc(db, "users", phone);
-      const userSnap = await getDoc(userRef);
-
-      if (userSnap.exists()) {
-        currentUser = userSnap.data();
-        document.getElementById('auth-section').classList.add('hidden');
-        document.getElementById('admin-section').classList.add('hidden');
-        document.getElementById('dashboard-section').classList.remove('hidden');
-        document.getElementById('welcome-msg').innerText = `שלום ${currentUser.name}!`;
-
-        renderMessages(currentUser.messages || []);
-        startStatsAndTimer();
-      }
-    }
-
-    // פאנל מנהל
-    function showAdminPanel() {
-      document.getElementById('auth-section').classList.add('hidden');
-      document.getElementById('dashboard-section').classList.add('hidden');
-      document.getElementById('admin-section').classList.remove('hidden');
-    }
-
-    document.getElementById('admin-logout').addEventListener('click', () => {
-      localStorage.removeItem('user_phone');
-      location.reload();
-    });
-
-    // הצגת הודעות עידוד נכנסות
-    function renderMessages(msgs) {
-      const inboxDiv = document.getElementById('inbox-list');
-      if (msgs.length === 0) {
-        inboxDiv.innerHTML = '<small style="color:#aaa;">אין הודעות חדשות</small>';
-        return;
-      }
-
-      inboxDiv.innerHTML = msgs.slice(-5).reverse().map(m => `
-        <div class="msg-item">
-          <span class="msg-sender">${m.from}:</span> "${m.text}"
+          <div class="timer-block">
+            <div class="timer-label">זמן מתחילת האתגר</div>
+            <div class="timer-grid">
+              <div class="timer-cell"><div class="num tabular" id="tDays">0</div><div class="unit">ימים</div></div>
+              <div class="timer-cell"><div class="num tabular" id="tHours">0</div><div class="unit">שעות</div></div>
+              <div class="timer-cell"><div class="num tabular" id="tMins">0</div><div class="unit">דקות</div></div>
+              <div class="timer-cell"><div class="num tabular" id="tSecs">0</div><div class="unit">שניות</div></div>
+            </div>
+          </div>
         </div>
-      `).join('');
+
+        <div class="score-row">
+          <div class="score-item"><div class="val tabular" id="baseScore">0</div><div class="lbl">ניקוד בסיס</div></div>
+          <div class="score-item"><div class="val tabular" id="bonusScore">0</div><div class="lbl">ניקוד בונוס</div></div>
+          <div class="score-item total"><div class="val tabular" id="totalScore">0</div><div class="lbl">סה"כ ניקוד</div></div>
+        </div>
+
+        <div class="break-row">
+          <p>נשברת? אל תתביישי/תתבייש — מתחילים שוב, זה חלק מהדרך.</p>
+          <button id="breakBtn" class="btn btn-danger">💔 נשברתי</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">📬 הודעות עידוד שקיבלת</div>
+        <div class="inbox-list" id="inboxList">
+          <div class="empty-state">עדיין לא התקבלו הודעות עידוד</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- LEADERBOARD ---- -->
+    <section id="tab-leaderboard" class="hidden">
+      <div class="panel">
+        <div class="section-title">🏆 לוח מובילים בזמן אמת</div>
+        <div id="leaderboardList"></div>
+      </div>
+    </section>
+
+    <!-- ---- ADMIN ---- -->
+    <section id="tab-admin" class="hidden">
+      <div class="panel">
+        <div class="section-title">⚙️ ניהול משתתפים</div>
+        <div id="adminList"></div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===== Encourage Modal ===== -->
+<div class="modal-backdrop hidden" id="encourageModal">
+  <div class="modal">
+    <h3>📣 שליחת עידוד</h3>
+    <div class="modal-sub">שולח/ת עידוד ל<span id="encourageTargetName">-</span>. תקבל/י 50 נקודות בונוס!</div>
+    <div class="phrase-list" id="phraseList"></div>
+    <textarea id="customPhrase" placeholder="או כתבו הודעה אישית משלכם..."></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelEncourage">ביטול</button>
+      <button class="btn btn-primary" id="sendEncourage">שליחה</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Break Confirm Modal ===== -->
+<div class="modal-backdrop hidden" id="breakModal">
+  <div class="modal">
+    <h3>💔 איפוס האתגר</h3>
+    <div class="modal-sub">האם את/ה בטוח/ה? הפעולה תאפס את הטיימר, הרצף וניקוד הבונוס שלך לאפס. ניקוד הבסיס יתחיל להיספר מחדש מעכשיו.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelBreak">ביטול</button>
+      <button class="btn btn-danger" id="confirmBreak">כן, נשברתי</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, setDoc, getDoc, updateDoc,
+  arrayUnion, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd8edyyW3JLtakSSKwzu5KdNSHXiSER94",
+  authDomain: "aloneiabbago-on.firebaseapp.com",
+  projectId: "aloneiabbago-on",
+  storageBucket: "aloneiabbago-on.firebasestorage.app",
+  messagingSenderId: "213608542610",
+  appId: "1:213608542610:web:442c78168d7b763d99514b",
+  measurementId: "G-HJ22C4JM50"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const usersCol = collection(db, "users");
+
+const ADMIN_PASSWORD = "4468800";
+const LS_KEY = "abba_gostop_phone";
+
+const ENCOURAGE_PHRASES = [
+  "כל הכבוד! את/ה חזק/ה מכפי שאת/ה חושב/ת 💪",
+  "יום נוסף, ניצחון נוסף. תמשיך/י ככה!",
+  "אני גאה בך על ההתמדה שלך 🙌",
+  "זוכר/ת למה התחלת. תישאר/י שם.",
+  "אתגר קשה שווה תוצאה גדולה. יאללה!",
+  "הרצף שלך מרשים, אל תעצור/י עכשיו!",
+  "אנחנו בזה ביחד, כל הכבוד על החוזק 🔥",
+  "עוד יום, עוד צעד קדימה. גאה בך!"
+];
+
+let currentUser = null;      // {phone, name, isAdmin}
+let currentUserData = null;  // firestore doc data for current user
+let allUsersCache = [];      // [{id, ...data}]
+let selectedPhrase = null;
+let encourageTargetId = null;
+let tickInterval = null;
+
+// ---------------- utils ----------------
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+function computeStats(userData){
+  const start = userData.startTime || Date.now();
+  const elapsedMs = Math.max(0, Date.now() - start);
+  const totalSeconds = Math.floor(elapsedMs/1000);
+  const days = Math.floor(totalSeconds/86400);
+  const hours = Math.floor((totalSeconds%86400)/3600);
+  const mins = Math.floor((totalSeconds%3600)/60);
+  const secs = totalSeconds%60;
+  const elapsedHoursTotal = elapsedMs/3600000;
+  const fullDays = Math.floor(elapsedHoursTotal/24); // streak
+  const baseScore = fullDays * 100;
+  const bonus = userData.bonusPoints || 0;
+  const total = baseScore + bonus;
+  const ringPct = (elapsedHoursTotal % 24) / 24; // progress toward next 24h/100pts
+  return {days,hours,mins,secs,fullDays,baseScore,bonus,total,ringPct};
+}
+function normalizePhone(p){
+  return (p||"").trim().replace(/[\s-]/g,"");
+}
+
+// ---------------- login flow ----------------
+const loginScreen = document.getElementById('loginScreen');
+const mainScreen = document.getElementById('mainScreen');
+const loginForm = document.getElementById('loginForm');
+const nameInput = document.getElementById('nameInput');
+const phoneInput = document.getElementById('phoneInput');
+
+loginForm.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = nameInput.value.trim();
+  const phoneRaw = phoneInput.value;
+  const phone = normalizePhone(phoneRaw);
+  if(!phone){ showToast("נא להזין מספר טלפון"); return; }
+
+  if(phone === ADMIN_PASSWORD){
+    currentUser = { phone, name: name || "מנהל", isAdmin:true };
+    localStorage.setItem(LS_KEY, phone);
+    await enterApp();
+    return;
+  }
+  if(!name){ showToast("נא להזין שם מלא"); return; }
+
+  try{
+    const ref = doc(db, "users", phone);
+    const snap = await getDoc(ref);
+    if(snap.exists()){
+      currentUser = { phone, name: snap.data().name || name, isAdmin:false };
+    } else {
+      const newDoc = {
+        name, phone, startTime: Date.now(),
+        bonusPoints: 0, inbox: [], lastEncourageDate: null
+      };
+      await setDoc(ref, newDoc);
+      currentUser = { phone, name, isAdmin:false };
     }
+    localStorage.setItem(LS_KEY, phone);
+    await enterApp();
+  }catch(err){
+    console.error(err);
+    showToast("שגיאה בהתחברות, נסה/י שוב");
+  }
+});
 
-    // טיימר וחישוב נקודות
-    function startStatsAndTimer() {
-      if (timerInterval) clearInterval(timerInterval);
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+  localStorage.removeItem(LS_KEY);
+  location.reload();
+});
 
-      timerInterval = setInterval(() => {
-        const diff = Date.now() - currentUser.startTime;
-        
-        const seconds = Math.floor((diff / 1000) % 60);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-        const basePoints = Math.floor((diff / (1000 * 60 * 60 * 24)) * 100);
-        const totalPoints = basePoints + (currentUser.bonusPoints || 0);
-
-        document.getElementById('streak-val').innerText = `${days} ימים`;
-        document.getElementById('points-val').innerText = totalPoints;
-        document.getElementById('timer').innerText = `${days}d ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-      }, 1000);
+async function tryAutoLogin(){
+  const saved = localStorage.getItem(LS_KEY);
+  if(!saved) return;
+  if(saved === ADMIN_PASSWORD){
+    currentUser = { phone: saved, name:"מנהל", isAdmin:true };
+    await enterApp();
+    return;
+  }
+  try{
+    const ref = doc(db,"users",saved);
+    const snap = await getDoc(ref);
+    if(snap.exists()){
+      currentUser = { phone: saved, name: snap.data().name, isAdmin:false };
+      await enterApp();
+    } else {
+      localStorage.removeItem(LS_KEY);
     }
+  }catch(err){
+    console.error(err);
+  }
+}
 
-    function pad(n) { return n < 10 ? '0' + n : n; }
+async function enterApp(){
+  loginScreen.classList.add('hidden');
+  mainScreen.classList.remove('hidden');
+  document.getElementById('chipName').textContent = currentUser.name;
+  if(currentUser.isAdmin){
+    document.getElementById('adminTabBtn').classList.remove('hidden');
+    switchTab('admin');
+  }
+  setupUsersListener();
+  if(tickInterval) clearInterval(tickInterval);
+  tickInterval = setInterval(renderDashboard, 1000);
+}
 
-    // איפוס בלחיצה על "נשברתי"
-    document.getElementById('fail-btn').addEventListener('click', async () => {
-      if (confirm('אתה בטוח שנשברת? הניקוד והרצף יתאפסו ל-0!')) {
-        const newStartTime = Date.now();
-        const updatedData = {
-          ...currentUser,
-          startTime: newStartTime,
-          bonusPoints: 0,
-          lastEncourageDate: ""
-        };
+// ---------------- tabs ----------------
+document.getElementById('tabs').addEventListener('click',(e)=>{
+  const btn = e.target.closest('.tab-btn');
+  if(!btn) return;
+  switchTab(btn.dataset.tab);
+});
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  ['dashboard','leaderboard','admin'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('hidden', t!==tab);
+  });
+}
 
-        await setDoc(doc(db, "users", currentUser.phone), updatedData);
-        currentUser = updatedData;
-        startStatsAndTimer();
+// ---------------- realtime users listener ----------------
+function setupUsersListener(){
+  onSnapshot(usersCol, (snapshot)=>{
+    allUsersCache = [];
+    snapshot.forEach(d=>{
+      allUsersCache.push({id:d.id, ...d.data()});
+    });
+    if(!currentUser.isAdmin){
+      const me = allUsersCache.find(u=>u.id===currentUser.phone);
+      if(me) currentUserData = me;
+    }
+    renderDashboard();
+    renderLeaderboard();
+    if(currentUser.isAdmin) renderAdmin();
+  }, (err)=>{
+    console.error(err);
+    showToast("שגיאת חיבור ל-Firestore");
+  });
+}
+
+// ---------------- dashboard render ----------------
+function renderDashboard(){
+  if(currentUser.isAdmin || !currentUserData) return;
+  const s = computeStats(currentUserData);
+  document.getElementById('tDays').textContent = s.days;
+  document.getElementById('tHours').textContent = String(s.hours).padStart(2,'0');
+  document.getElementById('tMins').textContent = String(s.mins).padStart(2,'0');
+  document.getElementById('tSecs').textContent = String(s.secs).padStart(2,'0');
+  document.getElementById('streakNum').textContent = s.fullDays;
+  document.getElementById('baseScore').textContent = s.baseScore;
+  document.getElementById('bonusScore').textContent = s.bonus;
+  document.getElementById('totalScore').textContent = s.total;
+
+  const ring = document.getElementById('ringFg');
+  const circumference = 264;
+  const offset = circumference - (s.ringPct * circumference);
+  ring.style.strokeDashoffset = offset;
+
+  renderInbox(currentUserData.inbox || []);
+}
+
+function renderInbox(inbox){
+  const list = document.getElementById('inboxList');
+  if(!inbox || inbox.length===0){
+    list.innerHTML = '<div class="empty-state">עדיין לא התקבלו הודעות עידוד</div>';
+    return;
+  }
+  const sorted = [...inbox].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  list.innerHTML = sorted.map(m=>{
+    const date = m.ts ? new Date(m.ts).toLocaleString('he-IL') : '';
+    return `<div class="inbox-item">
+      <div class="from">מאת: ${escapeHtml(m.from||'משתתף')}</div>
+      <div class="txt">${escapeHtml(m.text||'')}</div>
+      <div class="time">${date}</div>
+    </div>`;
+  }).join('');
+}
+
+// ---------------- leaderboard render ----------------
+function renderLeaderboard(){
+  const list = document.getElementById('leaderboardList');
+  const participants = allUsersCache.filter(u=>u.id !== ADMIN_PASSWORD);
+  const withStats = participants.map(u=>({...u, stats: computeStats(u)}));
+  withStats.sort((a,b)=> b.stats.total - a.stats.total);
+
+  const myLastEncourage = currentUserData ? currentUserData.lastEncourageDate : null;
+  const usedToday = myLastEncourage === todayStr();
+
+  list.innerHTML = withStats.map((u, idx)=>{
+    const rank = idx+1;
+    const isMe = !currentUser.isAdmin && u.id === currentUser.phone;
+    let rankClass = '';
+    if(rank===1) rankClass='top1'; else if(rank===2) rankClass='top2'; else if(rank===3) rankClass='top3';
+    const canEncourage = !currentUser.isAdmin && !isMe && !usedToday;
+    const btnDisabled = (currentUser.isAdmin || isMe || usedToday) ? 'disabled' : '';
+    const btnLabel = usedToday && !isMe ? '🔒 נוצל היום' : '📣 עודד';
+    return `<div class="lb-row ${isMe?'me':''}">
+      <div class="lb-rank ${rankClass}">${rank}</div>
+      <div class="lb-info">
+        <div class="lb-name">${escapeHtml(u.name||'ללא שם')}${isMe?' (את/ה)':''}</div>
+        <div class="lb-meta">🔥 ${u.stats.fullDays} ימי רצף</div>
+      </div>
+      <div class="lb-score">
+        <div class="n">${u.stats.total}</div>
+        <div class="l">נקודות</div>
+      </div>
+      ${currentUser.isAdmin ? '' : `<button class="encourage-btn" data-target="${u.id}" data-name="${escapeHtml(u.name||'')}" ${btnDisabled}>${isMe?'זה את/ה':btnLabel}</button>`}
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.encourage-btn:not([disabled])').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      openEncourageModal(btn.dataset.target, btn.dataset.name);
+    });
+  });
+}
+
+// ---------------- encourage modal ----------------
+const encourageModal = document.getElementById('encourageModal');
+const phraseListEl = document.getElementById('phraseList');
+const customPhraseEl = document.getElementById('customPhrase');
+
+function openEncourageModal(targetId, targetName){
+  encourageTargetId = targetId;
+  selectedPhrase = null;
+  customPhraseEl.value = '';
+  document.getElementById('encourageTargetName').textContent = ' ' + targetName;
+  phraseListEl.innerHTML = ENCOURAGE_PHRASES.map((p,i)=>
+    `<button type="button" class="phrase-opt" data-idx="${i}">${p}</button>`
+  ).join('');
+  phraseListEl.querySelectorAll('.phrase-opt').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      phraseListEl.querySelectorAll('.phrase-opt').forEach(o=>o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedPhrase = ENCOURAGE_PHRASES[el.dataset.idx];
+      customPhraseEl.value = '';
+    });
+  });
+  encourageModal.classList.remove('hidden');
+}
+document.getElementById('cancelEncourage').addEventListener('click', ()=>{
+  encourageModal.classList.add('hidden');
+});
+customPhraseEl.addEventListener('input', ()=>{
+  if(customPhraseEl.value.trim()){
+    selectedPhrase = null;
+    phraseListEl.querySelectorAll('.phrase-opt').forEach(o=>o.classList.remove('selected'));
+  }
+});
+
+document.getElementById('sendEncourage').addEventListener('click', async ()=>{
+  const text = customPhraseEl.value.trim() || selectedPhrase;
+  if(!text){ showToast("בחר/י משפט או כתוב/י הודעה"); return; }
+  if(!encourageTargetId) return;
+
+  const todayKey = todayStr();
+  if(currentUserData && currentUserData.lastEncourageDate === todayKey){
+    showToast("כבר עודדת מישהו היום 🙂");
+    encourageModal.classList.add('hidden');
+    return;
+  }
+
+  try{
+    const targetRef = doc(db,"users",encourageTargetId);
+    await updateDoc(targetRef, {
+      inbox: arrayUnion({ from: currentUser.name, text, ts: Date.now() })
+    });
+    const meRef = doc(db,"users",currentUser.phone);
+    const newBonus = (currentUserData?.bonusPoints || 0) + 50;
+    await updateDoc(meRef, {
+      bonusPoints: newBonus,
+      lastEncourageDate: todayKey
+    });
+    showToast("העידוד נשלח! קיבלת 50 נקודות בונוס 🎉");
+    encourageModal.classList.add('hidden');
+  }catch(err){
+    console.error(err);
+    showToast("שגיאה בשליחת העידוד");
+  }
+});
+
+// ---------------- break flow ----------------
+const breakModal = document.getElementById('breakModal');
+document.getElementById('breakBtn').addEventListener('click', ()=>{
+  breakModal.classList.remove('hidden');
+});
+document.getElementById('cancelBreak').addEventListener('click', ()=>{
+  breakModal.classList.add('hidden');
+});
+document.getElementById('confirmBreak').addEventListener('click', async ()=>{
+  try{
+    const ref = doc(db,"users",currentUser.phone);
+    await updateDoc(ref, {
+      startTime: Date.now(),
+      bonusPoints: 0
+    });
+    showToast("האתגר אופס. בהצלחה בהתחלה החדשה 💪");
+  }catch(err){
+    console.error(err);
+    showToast("שגיאה באיפוס");
+  }
+  breakModal.classList.add('hidden');
+});
+
+// ---------------- admin ----------------
+function renderAdmin(){
+  const list = document.getElementById('adminList');
+  const participants = allUsersCache.filter(u=>u.id !== ADMIN_PASSWORD);
+  participants.sort((a,b)=> (a.name||'').localeCompare(b.name||'','he'));
+  list.innerHTML = participants.map(u=>{
+    return `<div class="admin-row">
+      <span class="phone">${escapeHtml(u.phone||u.id)}</span>
+      <input type="text" value="${escapeHtml(u.name||'')}" data-id="${u.id}">
+      <button class="btn btn-sm btn-primary save-name" data-id="${u.id}">שמירה</button>
+    </div>`;
+  }).join('') || '<div class="empty-state">אין משתתפים רשומים עדיין</div>';
+
+  list.querySelectorAll('.save-name').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.id;
+      const input = list.querySelector(`input[data-id="${id}"]`);
+      const newName = input.value.trim();
+      if(!newName){ showToast("שם לא יכול להיות ריק"); return; }
+      try{
+        await updateDoc(doc(db,"users",id), { name: newName });
+        showToast("השם עודכן בהצלחה");
+      }catch(err){
+        console.error(err);
+        showToast("שגיאה בעדכון השם");
       }
     });
+  });
+}
 
-    // שליחת עידוד לחבר
-    window.sendEncouragement = async function(targetPhone, targetName) {
-      const today = new Date().toISOString().split('T')[0];
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
 
-      if (currentUser.lastEncourageDate === today) {
-        alert('כבר עודדת חבר היום! אפשר לעודד שוב מחר.');
-        return;
-      }
-
-      const options = [
-        "אל תוותר! אתה חזק מזה 💪",
-        "תאמין בעצמך, עוד יום אחד קטן! 🔥",
-        "אנחנו יחד באתגר הזה, אל תישבר! 👑",
-        "גוואן מחכה, תראה לו ממה אתה עשוי! 🚀"
-      ];
-
-      const choice = prompt(
-        `בחר משפט עידוד עבור ${targetName}:\n\n` +
-        `1. ${options[0]}\n` +
-        `2. ${options[1]}\n` +
-        `3. ${options[2]}\n` +
-        `4. ${options[3]}\n\n` +
-        `או רשום משפט אישי משלך:`
-      );
-
-      if (!choice) return;
-
-      let msgText = choice;
-      if (choice === "1") msgText = options[0];
-      if (choice === "2") msgText = options[1];
-      if (choice === "3") msgText = options[2];
-      if (choice === "4") msgText = options[3];
-
-      // עדכון הניקוד של השולח (+50 נק')
-      const updatedBonus = (currentUser.bonusPoints || 0) + 50;
-      await updateDoc(doc(db, "users", currentUser.phone), {
-        bonusPoints: updatedBonus,
-        lastEncourageDate: today
-      });
-
-      // הוספת ההודעה למקבל
-      await updateDoc(doc(db, "users", targetPhone), {
-        messages: arrayUnion({
-          from: currentUser.name,
-          text: msgText,
-          date: today
-        })
-      });
-
-      currentUser.bonusPoints = updatedBonus;
-      currentUser.lastEncourageDate = today;
-
-      alert(`הודעת העידוד נשלחה ל-${targetName}! קיבלת +50 נקודות בונוס 🎉`);
-      startStatsAndTimer();
-    };
-
-    // עריכת שם ע"י מנהל
-    window.adminEditName = async function(phone) {
-      const user = allUsersData.find(u => u.phone === phone);
-      if (!user) return;
-
-      const newName = prompt(`שנה שם עבור ${user.name}:`, user.name);
-      if (newName && newName.trim() !== "") {
-        await updateDoc(doc(db, "users", phone), {
-          name: newName.trim()
-        });
-        alert('השם עודכן בהצלחה!');
-      }
-    };
-
-    // לוח מובילים ועדכון בזמן אמת
-    onSnapshot(collection(db, "users"), (snapshot) => {
-      const listDiv = document.getElementById('leaderboard-list');
-      const adminDiv = document.getElementById('admin-users-list');
-      
-      listDiv.innerHTML = '';
-      if (adminDiv) adminDiv.innerHTML = '';
-
-      allUsersData = [];
-      const today = new Date().toISOString().split('T')[0];
-
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const diff = Date.now() - data.startTime;
-        const basePoints = Math.floor((diff / (1000 * 60 * 60 * 24)) * 100);
-        const totalPoints = basePoints + (data.bonusPoints || 0);
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-        allUsersData.push({
-          ...data,
-          totalPoints: totalPoints,
-          days: days
-        });
-      });
-
-      // מיון לפי ניקוד
-      allUsersData.sort((a, b) => b.totalPoints - a.totalPoints);
-
-      // עדכון לוח מובילים
-      allUsersData.forEach((user, index) => {
-        const isMe = currentUser && currentUser.phone === user.phone;
-        const canEncourage = currentUser && !isMe && currentUser.lastEncourageDate !== today;
-
-        const row = document.createElement('div');
-        row.className = `player-row ${isMe ? 'me' : ''}`;
-        row.innerHTML = `
-          <div>
-            <strong>#${index + 1}</strong> ${user.name} ${isMe ? '(אתה)' : ''}
-            <br><small style="color:#aaa;">${user.days} ימי רצף</small>
-          </div>
-          <div style="text-align:left;">
-            <span class="player-pts">${user.totalPoints} pts</span>
-            ${!isMe && currentUser ? `
-              <br><button class="btn-small" ${canEncourage ? '' : 'disabled'} 
-                onclick="sendEncouragement('${user.phone}', '${user.name}')">
-                📣 עודד
-              </button>
-            ` : ''}
-          </div>
-        `;
-        listDiv.appendChild(row);
-
-        // עדכון לרשימת מנהל
-        if (adminDiv) {
-          const adminRow = document.createElement('div');
-          adminRow.className = 'admin-row';
-          adminRow.innerHTML = `
-            <span style="flex:1;">${user.name} (${user.phone})</span>
-            <button class="btn-small" style="background:#ff3e3e;" onclick="adminEditName('${user.phone}')">ערוך שם</button>
-          `;
-          adminDiv.appendChild(adminRow);
-        }
-      });
-
-      // עדכון בזמן אמת של הודעות עבור המשתמש המחובר
-      if (currentUser) {
-        const meLatest = allUsersData.find(u => u.phone === currentUser.phone);
-        if (meLatest && meLatest.messages) {
-          renderMessages(meLatest.messages);
-        }
-      }
-    });
-  </script>
+// ---------------- boot ----------------
+tryAutoLogin();
+</script>
 </body>
 </html>
