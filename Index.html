@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>Alonei Abba Stops Gooning!</title>
+<title>Alonei Abba • Go On Stop – No Gwene</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -335,11 +335,19 @@
     padding:10px 12px;margin-bottom:8px;flex-wrap:wrap;
   }
   .admin-row input{
-    flex:1;min-width:140px;
     background:#161b21;border:1px solid var(--border);border-radius:8px;
     padding:8px 10px;color:var(--text-primary);font-size:13.5px;
   }
-  .admin-row .phone{color:var(--text-muted);font-size:12px;min-width:90px;}
+  .admin-row input.name-input{flex:1;min-width:120px;}
+  .admin-row input.points-input{width:90px;flex-shrink:0;text-align:center;}
+  .admin-row .phone{color:var(--text-muted);font-size:12px;min-width:82px;flex-shrink:0;}
+  .admin-row .points-wrap{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
+  .admin-row .points-wrap label{font-size:9.5px;color:var(--text-muted);text-align:center;}
+  .btn-delete{
+    background:transparent;border:1px solid var(--danger-dim);color:var(--danger);
+    padding:8px 12px;border-radius:8px;font-size:12.5px;font-weight:600;flex-shrink:0;
+  }
+  .btn-delete:hover{background:var(--danger);color:#fff3f0;border-color:var(--danger);}
 
   /* ---------- modal ---------- */
   .modal-backdrop{
@@ -410,7 +418,7 @@
   <div id="loginScreen">
     <div class="login-card">
       <div class="brand-eyebrow">אלוני אבא</div>
-      <h1 class="brand-title">Stop Gooning Challenge <br>די לאונן!</h1>
+      <h1 class="brand-title">Go On Stop<br>No Gwene</h1>
       <p class="brand-sub">האתגר הקבוצתי שלנו — כל יום שעובר הוא ניצחון</p>
 
       <form id="loginForm">
@@ -432,8 +440,8 @@
   <div id="mainScreen" class="hidden">
     <header class="top">
       <div class="title-block">
-        <h1>אלוני אבא מפסיקים לאונן!!!</h1>
-        <div class="sub">אלוני אבא · אתגר אוננות קבוצתי</div>
+        <h1>Go On Stop – No Gwene</h1>
+        <div class="sub">אלוני אבא · אתגר קבוצתי</div>
       </div>
       <div class="user-chip">
         <span class="dot"></span>
@@ -470,7 +478,7 @@
           </div>
 
           <div class="timer-block">
-            <div class="timer-label">זמן מתחילת אתגר ה"לא לאונן"</div>
+            <div class="timer-label">זמן מתחילת האתגר</div>
             <div class="timer-grid">
               <div class="timer-cell"><div class="num tabular" id="tDays">0</div><div class="unit">ימים</div></div>
               <div class="timer-cell"><div class="num tabular" id="tHours">0</div><div class="unit">שעות</div></div>
@@ -487,8 +495,8 @@
         </div>
 
         <div class="break-row">
-          <p>אוננת? אל תתביישי/תתבייש — מתחילים שוב, זה חלק מהדרך.</p>
-          <button id="breakBtn" class="btn btn-danger">💔 אוננתי</button>
+          <p>נשברת? אל תתביישי/תתבייש — מתחילים שוב, זה חלק מהדרך.</p>
+          <button id="breakBtn" class="btn btn-danger">💔 נשברתי</button>
         </div>
       </div>
 
@@ -503,7 +511,7 @@
     <!-- ---- LEADERBOARD ---- -->
     <section id="tab-leaderboard" class="hidden">
       <div class="panel">
-        <div class="section-title">🏆 לוח מובילי האין-אוננות בזמן אמת</div>
+        <div class="section-title">🏆 לוח מובילים בזמן אמת</div>
         <div id="leaderboardList"></div>
       </div>
     </section>
@@ -540,7 +548,7 @@
     <div class="modal-sub">האם את/ה בטוח/ה? הפעולה תאפס את הטיימר, הרצף וניקוד הבונוס שלך לאפס. ניקוד הבסיס יתחיל להיספר מחדש מעכשיו.</div>
     <div class="modal-actions">
       <button class="btn btn-ghost" id="cancelBreak">ביטול</button>
-      <button class="btn btn-danger" id="confirmBreak">כן, אוננתי</button>
+      <button class="btn btn-danger" id="confirmBreak">כן, נשברתי</button>
     </div>
   </div>
 </div>
@@ -550,7 +558,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
-  getFirestore, collection, doc, setDoc, getDoc, updateDoc,
+  getFirestore, collection, doc, setDoc, getDoc, updateDoc, deleteDoc,
   arrayUnion, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -905,25 +913,50 @@ function renderAdmin(){
   const participants = allUsersCache.filter(u=>u.id !== ADMIN_PASSWORD);
   participants.sort((a,b)=> (a.name||'').localeCompare(b.name||'','he'));
   list.innerHTML = participants.map(u=>{
+    const stats = computeStats(u);
     return `<div class="admin-row">
       <span class="phone">${escapeHtml(u.phone||u.id)}</span>
-      <input type="text" value="${escapeHtml(u.name||'')}" data-id="${u.id}">
-      <button class="btn btn-sm btn-primary save-name" data-id="${u.id}">שמירה</button>
+      <input type="text" class="name-input" value="${escapeHtml(u.name||'')}" data-name-id="${u.id}">
+      <div class="points-wrap">
+        <label>בונוס (בסיס: ${stats.baseScore})</label>
+        <input type="number" class="points-input" value="${u.bonusPoints||0}" data-points-id="${u.id}">
+      </div>
+      <button class="btn btn-sm btn-primary save-row" data-id="${u.id}">שמירה</button>
+      <button class="btn-delete delete-row" data-id="${u.id}" data-name="${escapeHtml(u.name||'')}">🗑️ מחיקה</button>
     </div>`;
   }).join('') || '<div class="empty-state">אין משתתפים רשומים עדיין</div>';
 
-  list.querySelectorAll('.save-name').forEach(btn=>{
+  list.querySelectorAll('.save-row').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
       const id = btn.dataset.id;
-      const input = list.querySelector(`input[data-id="${id}"]`);
-      const newName = input.value.trim();
+      const nameInputEl = list.querySelector(`input[data-name-id="${id}"]`);
+      const pointsInputEl = list.querySelector(`input[data-points-id="${id}"]`);
+      const newName = nameInputEl.value.trim();
+      const newBonus = parseInt(pointsInputEl.value, 10);
       if(!newName){ showToast("שם לא יכול להיות ריק"); return; }
+      if(Number.isNaN(newBonus)){ showToast("ניקוד הבונוס חייב להיות מספר"); return; }
       try{
-        await updateDoc(doc(db,"users",id), { name: newName });
-        showToast("השם עודכן בהצלחה");
+        await updateDoc(doc(db,"users",id), { name: newName, bonusPoints: newBonus });
+        showToast("הפרטים עודכנו בהצלחה");
       }catch(err){
         console.error(err);
-        showToast("שגיאה בעדכון השם");
+        showToast("שגיאה בעדכון הפרטים");
+      }
+    });
+  });
+
+  list.querySelectorAll('.delete-row').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.id;
+      const name = btn.dataset.name || id;
+      const ok = confirm(`למחוק לצמיתות את ${name}? הפעולה אינה הפיכה.`);
+      if(!ok) return;
+      try{
+        await deleteDoc(doc(db,"users",id));
+        showToast("המשתמש נמחק בהצלחה");
+      }catch(err){
+        console.error(err);
+        showToast("שגיאה במחיקת המשתמש");
       }
     });
   });
