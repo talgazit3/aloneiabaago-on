@@ -358,6 +358,15 @@
   .admin-row .phone{color:var(--text-muted);font-size:12px;min-width:82px;flex-shrink:0;}
   .admin-row .points-wrap{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
   .admin-row .points-wrap label{font-size:9.5px;color:var(--text-muted);text-align:center;}
+  .admin-avatar-upload{position:relative;cursor:pointer;flex-shrink:0;width:36px;height:36px;}
+  .admin-avatar-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+  .admin-avatar-upload .cam-sm{
+    position:absolute;bottom:-3px;left:-3px;
+    width:16px;height:16px;border-radius:50%;
+    background:var(--accent-gold);color:#171207;
+    display:flex;align-items:center;justify-content:center;
+    font-size:9px;border:1.5px solid var(--bg-panel);
+  }
   .btn-delete{
     background:transparent;border:1px solid var(--danger-dim);color:var(--danger);
     padding:8px 12px;border-radius:8px;font-size:12.5px;font-weight:600;flex-shrink:0;
@@ -1125,7 +1134,11 @@ function renderAdmin(){
   list.innerHTML = participants.map(u=>{
     const stats = computeStats(u);
     return `<div class="admin-row">
-      ${avatarHtml(u, 'avatar-sm')}
+      <div class="avatar-upload admin-avatar-upload">
+        ${avatarHtml(u, 'avatar-sm')}
+        <input type="file" accept="image/*" class="admin-photo-input" data-photo-id="${u.id}">
+        <div class="cam cam-sm">📷</div>
+      </div>
       <span class="phone">${escapeHtml(u.phone||u.id)}</span>
       <input type="text" class="name-input" value="${escapeHtml(u.name||'')}" data-name-id="${u.id}">
       <div class="points-wrap">
@@ -1136,6 +1149,24 @@ function renderAdmin(){
       <button class="btn-delete delete-row" data-id="${u.id}" data-name="${escapeHtml(u.name||'')}">🗑️ מחיקה</button>
     </div>`;
   }).join('') || '<div class="empty-state">אין משתתפים רשומים עדיין</div>';
+
+  list.querySelectorAll('.admin-photo-input').forEach(input=>{
+    input.addEventListener('change', async (e)=>{
+      const file = e.target.files[0];
+      const id = input.dataset.photoId;
+      if(!file) return;
+      if(!file.type.startsWith('image/')){ showToast("נא לבחור קובץ תמונה"); return; }
+      try{
+        const dataUrl = await resizeImageToDataUrl(file, 220);
+        await updateDoc(doc(db,"users",id), { photoURL: dataUrl });
+        showToast("תמונת הפרופיל עודכנה");
+      }catch(err){
+        console.error(err);
+        showToast("שגיאה בהעלאת התמונה");
+      }
+      e.target.value = '';
+    });
+  });
 
   list.querySelectorAll('.save-row').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
