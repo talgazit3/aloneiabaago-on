@@ -288,7 +288,8 @@
   .lb-row{
     display:flex;
     align-items:center;
-    gap:12px;
+    flex-wrap:wrap;
+    gap:10px 12px;
     background:#0f1318;
     border:1px solid var(--border);
     border-radius:12px;
@@ -297,6 +298,20 @@
     transition:border-color .15s;
   }
   .lb-row.me{border-color:var(--accent-gold);background:linear-gradient(90deg, rgba(227,165,66,0.12), #0f1318 60%);}
+  .lb-identity{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:1 1 180px;
+    min-width:180px;
+  }
+  .lb-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-shrink:0;
+    margin-inline-start:auto;
+  }
   .lb-rank{
     width:34px;height:34px;flex-shrink:0;
     border-radius:50%;
@@ -311,7 +326,7 @@
   .lb-info{flex:1;min-width:0;}
   .lb-name{font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .lb-meta{font-size:11.5px;color:var(--text-muted);margin-top:2px;}
-  .lb-score{text-align:center;flex-shrink:0;min-width:64px;}
+  .lb-score{text-align:center;flex-shrink:0;min-width:56px;}
   .lb-score .n{font-size:17px;font-weight:800;color:var(--accent-gold);}
   .lb-score .l{font-size:9.5px;color:var(--text-muted);}
   .encourage-btn{
@@ -984,17 +999,21 @@ function renderLeaderboard(){
     const btnDisabled = (currentUser.isAdmin || isMe || usedToday) ? 'disabled' : '';
     const btnLabel = usedToday && !isMe ? '🔒 נוצל היום' : '📣 עודד';
     return `<div class="lb-row ${isMe?'me':''}">
-      <div class="lb-rank ${rankClass}">${rank}</div>
-      <div class="lb-name-link" data-profile="${u.id}" style="display:flex;flex-shrink:0;">${avatarHtml(u, 'avatar-md')}</div>
-      <div class="lb-info">
-        <div class="lb-name lb-name-link" data-profile="${u.id}">${escapeHtml(u.name||'ללא שם')}${isMe?' (את/ה)':''}</div>
-        <div class="lb-meta">🔥 ${u.stats.fullDays} ימי רצף</div>
+      <div class="lb-identity">
+        <div class="lb-rank ${rankClass}">${rank}</div>
+        <div class="lb-name-link" data-profile="${u.id}" style="display:flex;flex-shrink:0;">${avatarHtml(u, 'avatar-md')}</div>
+        <div class="lb-info">
+          <div class="lb-name lb-name-link" data-profile="${u.id}">${escapeHtml(u.name||'ללא שם')}${isMe?' (את/ה)':''}</div>
+          <div class="lb-meta">🔥 ${u.stats.fullDays} ימי רצף</div>
+        </div>
       </div>
-      <div class="lb-score">
-        <div class="n">${u.stats.total}</div>
-        <div class="l">נקודות</div>
+      <div class="lb-actions">
+        <div class="lb-score">
+          <div class="n">${u.stats.total}</div>
+          <div class="l">נקודות</div>
+        </div>
+        ${currentUser.isAdmin ? '' : `<button class="encourage-btn" data-target="${u.id}" data-name="${escapeHtml(u.name||'')}" ${btnDisabled}>${isMe?'זה את/ה':btnLabel}</button>`}
       </div>
-      ${currentUser.isAdmin ? '' : `<button class="encourage-btn" data-target="${u.id}" data-name="${escapeHtml(u.name||'')}" ${btnDisabled}>${isMe?'זה את/ה':btnLabel}</button>`}
     </div>`;
   }).join('');
 
