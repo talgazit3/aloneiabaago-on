@@ -349,7 +349,60 @@
   }
   .btn-delete:hover{background:var(--danger);color:#fff3f0;border-color:var(--danger);}
 
-  /* ---------- modal ---------- */
+  /* ---------- avatars ---------- */
+  .avatar{
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:#171207;
+    background:linear-gradient(135deg,#f2c265,#e3a542);
+  }
+  .avatar-sm{width:36px;height:36px;font-size:14px;}
+  .avatar-md{width:52px;height:52px;font-size:18px;}
+  .avatar-lg{width:96px;height:96px;font-size:32px;}
+  .chip-avatar{width:26px;height:26px;font-size:11px;}
+
+  /* ---------- profile edit panel ---------- */
+  .profile-edit{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .profile-edit .avatar-upload{position:relative;cursor:pointer;flex-shrink:0;}
+  .profile-edit .avatar-upload input[type=file]{
+    position:absolute;inset:0;opacity:0;cursor:pointer;
+  }
+  .profile-edit .avatar-upload .cam{
+    position:absolute;bottom:-2px;left:-2px;
+    width:26px;height:26px;border-radius:50%;
+    background:var(--accent-gold);color:#171207;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;border:2px solid var(--bg-panel);
+  }
+  .profile-edit-fields{flex:1;min-width:200px;}
+  .name-edit-row{display:flex;gap:8px;align-items:center;}
+  .name-edit-row input{
+    flex:1;padding:10px 12px;background:#0f1318;border:1px solid var(--border);
+    border-radius:9px;color:var(--text-primary);font-size:14px;outline:none;
+  }
+  .name-edit-row input:disabled{opacity:0.5;}
+  .name-edit-row input:focus{border-color:var(--accent-gold);}
+  .lock-note{font-size:11.5px;color:var(--text-muted);margin-top:6px;}
+  .lock-note.locked{color:var(--danger);}
+
+  /* ---------- profile view modal ---------- */
+  .profile-view-head{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .profile-view-name{font-size:18px;font-weight:800;}
+  .profile-view-meta{font-size:12.5px;color:var(--text-muted);margin-top:2px;}
+  .profile-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+  .profile-stat{background:#0f1318;border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;}
+  .profile-stat .v{font-size:19px;font-weight:800;color:var(--accent-gold);}
+  .profile-stat .l{font-size:10.5px;color:var(--text-muted);margin-top:3px;}
+  .profile-timer{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
+  }
+  .profile-timer .cell{background:#0f1318;border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center;}
+  .profile-timer .cell .num{font-size:16px;font-weight:800;}
+  .profile-timer .cell .unit{font-size:9.5px;color:var(--text-muted);}
+  .lb-name-link{cursor:pointer;}
+  .lb-name-link:hover{text-decoration:underline;text-decoration-color:var(--accent-gold);}
   .modal-backdrop{
     position:fixed;inset:0;background:rgba(8,10,12,0.72);
     display:flex;align-items:center;justify-content:center;
@@ -444,7 +497,7 @@
         <div class="sub">אלוני אבא · אתגר קבוצתי</div>
       </div>
       <div class="user-chip">
-        <span class="dot"></span>
+        <div class="avatar chip-avatar" id="chipAvatar">?</div>
         <span id="chipName">—</span>
         <button id="logoutBtn">התנתקות</button>
       </div>
@@ -458,6 +511,24 @@
 
     <!-- ---- DASHBOARD ---- -->
     <section id="tab-dashboard">
+      <div class="panel">
+        <div class="section-title">👤 עריכת פרופיל</div>
+        <div class="profile-edit">
+          <div class="avatar-upload">
+            <div class="avatar avatar-lg" id="myAvatar">?</div>
+            <input type="file" id="photoInput" accept="image/*">
+            <div class="cam">📷</div>
+          </div>
+          <div class="profile-edit-fields">
+            <div class="name-edit-row">
+              <input type="text" id="myNameInput" placeholder="השם שלך">
+              <button class="btn btn-primary btn-sm" id="saveNameBtn">שמירה</button>
+            </div>
+            <div class="lock-note" id="nameLockNote"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="panel">
         <div class="hero">
           <div class="ring-wrap">
@@ -553,6 +624,33 @@
   </div>
 </div>
 
+<!-- ===== Profile View Modal ===== -->
+<div class="modal-backdrop hidden" id="profileViewModal">
+  <div class="modal">
+    <div class="profile-view-head">
+      <div class="avatar avatar-lg" id="pvAvatar">?</div>
+      <div>
+        <div class="profile-view-name" id="pvName">-</div>
+        <div class="profile-view-meta" id="pvPhone">-</div>
+      </div>
+    </div>
+    <div class="profile-stats-grid">
+      <div class="profile-stat"><div class="v" id="pvStreak">0</div><div class="l">ימי רצף</div></div>
+      <div class="profile-stat"><div class="v" id="pvTotal">0</div><div class="l">סה"כ נקודות</div></div>
+      <div class="profile-stat"><div class="v" id="pvBonus">0</div><div class="l">בונוס</div></div>
+    </div>
+    <div class="profile-timer">
+      <div class="cell"><div class="num tabular" id="pvDays">0</div><div class="unit">ימים</div></div>
+      <div class="cell"><div class="num tabular" id="pvHours">0</div><div class="unit">שעות</div></div>
+      <div class="cell"><div class="num tabular" id="pvMins">0</div><div class="unit">דקות</div></div>
+      <div class="cell"><div class="num tabular" id="pvSecs">0</div><div class="unit">שניות</div></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="closeProfileView">סגירה</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script type="module">
@@ -626,6 +724,58 @@ function computeStats(userData){
 function normalizePhone(p){
   return (p||"").trim().replace(/[\s-]/g,"");
 }
+function initialsColor(name){
+  const colors = ['#e3a542','#6f9c86','#c1554d','#5b7fa6','#9c6f8e','#a67b34'];
+  let hash = 0;
+  for(let i=0;i<(name||'').length;i++) hash = (name.charCodeAt ? name.charCodeAt(i) : 0) + hash;
+  return colors[Math.abs(hash) % colors.length];
+}
+function avatarHtml(user, sizeClass){
+  const name = user?.name || '?';
+  const initial = name.trim().charAt(0) || '?';
+  if(user?.photoURL){
+    return `<img class="avatar ${sizeClass}" src="${user.photoURL}" alt="${escapeHtml(name)}">`;
+  }
+  return `<div class="avatar ${sizeClass}" style="background:${initialsColor(name)}">${escapeHtml(initial)}</div>`;
+}
+function setAvatarEl(el, user, sizeClass){
+  const name = user?.name || '?';
+  const initial = name.trim().charAt(0) || '?';
+  el.className = `avatar ${sizeClass}`;
+  if(user?.photoURL){
+    el.style.background = 'transparent';
+    el.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = user.photoURL;
+    img.style.width='100%';img.style.height='100%';img.style.borderRadius='50%';img.style.objectFit='cover';
+    el.appendChild(img);
+  } else {
+    el.style.background = initialsColor(name);
+    el.textContent = initial;
+  }
+}
+function resizeImageToDataUrl(file, maxDim=220){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let w = img.width, h = img.height;
+        if(w>h){ if(w>maxDim){h=Math.round(h*maxDim/w);w=maxDim;} }
+        else { if(h>maxDim){w=Math.round(w*maxDim/h);h=maxDim;} }
+        const canvas = document.createElement('canvas');
+        canvas.width=w;canvas.height=h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg',0.75));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 // ---------------- login flow ----------------
 const loginScreen = document.getElementById('loginScreen');
@@ -657,7 +807,8 @@ loginForm.addEventListener('submit', async (e)=>{
     } else {
       const newDoc = {
         name, phone, startTime: Date.now(),
-        bonusPoints: 0, inbox: [], lastEncourageDate: null
+        bonusPoints: 0, inbox: [], lastEncourageDate: null,
+        photoURL: "", lastNameChange: null
       };
       await setDoc(ref, newDoc);
       currentUser = { phone, name, isAdmin:false };
@@ -703,6 +854,7 @@ async function enterApp(){
   document.getElementById('chipName').textContent = currentUser.name;
   if(currentUser.isAdmin){
     document.getElementById('adminTabBtn').classList.remove('hidden');
+    document.querySelector('#tab-dashboard .panel').classList.add('hidden'); // hide profile-edit panel for admin
     switchTab('admin');
   }
   setupUsersListener();
@@ -762,6 +914,38 @@ function renderDashboard(){
   ring.style.strokeDashoffset = offset;
 
   renderInbox(currentUserData.inbox || []);
+
+  // sync profile edit UI
+  setAvatarEl(document.getElementById('myAvatar'), currentUserData, 'avatar-lg');
+  setAvatarEl(document.getElementById('chipAvatar'), currentUserData, 'chip-avatar');
+  if(document.activeElement !== document.getElementById('myNameInput')){
+    document.getElementById('myNameInput').value = currentUserData.name || '';
+  }
+  updateNameLockUI();
+}
+
+function updateNameLockUI(){
+  const note = document.getElementById('nameLockNote');
+  const input = document.getElementById('myNameInput');
+  const btn = document.getElementById('saveNameBtn');
+  const last = currentUserData?.lastNameChange;
+  if(last){
+    const elapsed = Date.now() - last;
+    const remain = 24*3600*1000 - elapsed;
+    if(remain > 0){
+      const h = Math.floor(remain/3600000);
+      const m = Math.floor((remain%3600000)/60000);
+      note.textContent = `ניתן לשנות שם שוב בעוד ${h} שעות ו-${m} דקות`;
+      note.classList.add('locked');
+      input.disabled = true;
+      btn.disabled = true;
+      return;
+    }
+  }
+  note.textContent = 'ניתן לשנות את השם פעם ביום';
+  note.classList.remove('locked');
+  input.disabled = false;
+  btn.disabled = false;
 }
 
 function renderInbox(inbox){
@@ -801,8 +985,9 @@ function renderLeaderboard(){
     const btnLabel = usedToday && !isMe ? '🔒 נוצל היום' : '📣 עודד';
     return `<div class="lb-row ${isMe?'me':''}">
       <div class="lb-rank ${rankClass}">${rank}</div>
+      <div class="lb-name-link" data-profile="${u.id}" style="display:flex;flex-shrink:0;">${avatarHtml(u, 'avatar-md')}</div>
       <div class="lb-info">
-        <div class="lb-name">${escapeHtml(u.name||'ללא שם')}${isMe?' (את/ה)':''}</div>
+        <div class="lb-name lb-name-link" data-profile="${u.id}">${escapeHtml(u.name||'ללא שם')}${isMe?' (את/ה)':''}</div>
         <div class="lb-meta">🔥 ${u.stats.fullDays} ימי רצף</div>
       </div>
       <div class="lb-score">
@@ -812,6 +997,12 @@ function renderLeaderboard(){
       ${currentUser.isAdmin ? '' : `<button class="encourage-btn" data-target="${u.id}" data-name="${escapeHtml(u.name||'')}" ${btnDisabled}>${isMe?'זה את/ה':btnLabel}</button>`}
     </div>`;
   }).join('');
+
+  list.querySelectorAll('.lb-name-link').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      openProfileView(el.dataset.profile);
+    });
+  });
 
   list.querySelectorAll('.encourage-btn:not([disabled])').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -915,6 +1106,7 @@ function renderAdmin(){
   list.innerHTML = participants.map(u=>{
     const stats = computeStats(u);
     return `<div class="admin-row">
+      ${avatarHtml(u, 'avatar-sm')}
       <span class="phone">${escapeHtml(u.phone||u.id)}</span>
       <input type="text" class="name-input" value="${escapeHtml(u.name||'')}" data-name-id="${u.id}">
       <div class="points-wrap">
@@ -961,6 +1153,83 @@ function renderAdmin(){
     });
   });
 }
+
+// ---------------- profile edit (photo + name) ----------------
+document.getElementById('photoInput').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')){ showToast("נא לבחור קובץ תמונה"); return; }
+  try{
+    const dataUrl = await resizeImageToDataUrl(file, 220);
+    await updateDoc(doc(db,"users",currentUser.phone), { photoURL: dataUrl });
+    showToast("תמונת הפרופיל עודכנה!");
+  }catch(err){
+    console.error(err);
+    showToast("שגיאה בהעלאת התמונה");
+  }
+  e.target.value = '';
+});
+
+document.getElementById('saveNameBtn').addEventListener('click', async ()=>{
+  const newName = document.getElementById('myNameInput').value.trim();
+  if(!newName){ showToast("השם לא יכול להיות ריק"); return; }
+  const last = currentUserData?.lastNameChange;
+  if(last && (Date.now() - last) < 24*3600*1000){
+    showToast("ניתן לשנות שם רק פעם ב-24 שעות");
+    return;
+  }
+  try{
+    await updateDoc(doc(db,"users",currentUser.phone), {
+      name: newName,
+      lastNameChange: Date.now()
+    });
+    currentUser.name = newName;
+    document.getElementById('chipName').textContent = newName;
+    showToast("השם עודכן בהצלחה!");
+  }catch(err){
+    console.error(err);
+    showToast("שגיאה בעדכון השם");
+  }
+});
+
+// ---------------- profile view modal (other participants) ----------------
+const profileViewModal = document.getElementById('profileViewModal');
+let profileViewUserId = null;
+let profileViewInterval = null;
+
+function openProfileView(userId){
+  const user = allUsersCache.find(u=>u.id===userId);
+  if(!user) return;
+  profileViewUserId = userId;
+  setAvatarEl(document.getElementById('pvAvatar'), user, 'avatar-lg');
+  document.getElementById('pvName').textContent = user.name || 'ללא שם';
+  document.getElementById('pvPhone').textContent = user.phone || user.id;
+  renderProfileView();
+  if(profileViewInterval) clearInterval(profileViewInterval);
+  profileViewInterval = setInterval(renderProfileView, 1000);
+  profileViewModal.classList.remove('hidden');
+}
+function renderProfileView(){
+  const user = allUsersCache.find(u=>u.id===profileViewUserId);
+  if(!user){ closeProfileView(); return; }
+  const s = computeStats(user);
+  document.getElementById('pvStreak').textContent = s.fullDays;
+  document.getElementById('pvTotal').textContent = s.total;
+  document.getElementById('pvBonus').textContent = s.bonus;
+  document.getElementById('pvDays').textContent = s.days;
+  document.getElementById('pvHours').textContent = String(s.hours).padStart(2,'0');
+  document.getElementById('pvMins').textContent = String(s.mins).padStart(2,'0');
+  document.getElementById('pvSecs').textContent = String(s.secs).padStart(2,'0');
+}
+function closeProfileView(){
+  profileViewModal.classList.add('hidden');
+  if(profileViewInterval) clearInterval(profileViewInterval);
+  profileViewUserId = null;
+}
+document.getElementById('closeProfileView').addEventListener('click', closeProfileView);
+profileViewModal.addEventListener('click', (e)=>{
+  if(e.target === profileViewModal) closeProfileView();
+});
 
 function escapeHtml(str){
   const d = document.createElement('div');
