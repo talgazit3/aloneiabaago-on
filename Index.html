@@ -1334,17 +1334,22 @@ document.getElementById('confirmBreak').addEventListener('click', async ()=>{
       bonusPoints: 0
     });
 
-// שליחת התראת פוש לכל המשתמשים באפליקציה על השבירה
-    await sendNotificationToAll(`💔 מישהו נשבר באתגר!\n${currentUser.name} נשבר/ה והניקוד שלו/ה אופס. כולנו איתו/ה!`);
+breakButton.addEventListener('click', async () => {
+  try {
+    // await לשליחת ההתראה לכולם
+    await sendNotificationToUser(
+      "💔 מישהו נשבר באתגר!",
+      `${currentUser.name} נשבר/ה והניקוד שלו/ה אופס. כולנו איתו/ה!`
+    );
 
     showToast("האתגר אופס. בהצלחה בהתחלה החדשה 💪");
   } catch (err) {
     console.error(err);
     showToast("שגיאה באיפוס");
   }
+  
   breakModal.classList.add('hidden');
 });
-
 // ---------------- admin ----------------
 function renderAdmin(){
   const list = document.getElementById('adminList');
