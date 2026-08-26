@@ -510,17 +510,24 @@
   }
 </style>
 
-<!-- ===== OneSignal Push Notifications SDK =====
-  IMPORTANT: replace ONESIGNAL_APP_ID below (in the script block near the
-  bottom of this file) with your real OneSignal App ID from
-  Settings -> Keys & IDs in the OneSignal dashboard.
-  Also make sure OneSignalSDKWorker.js (from the SDK zip you uploaded) is
-  extracted and placed at the ROOT of your site, next to this index.html
-  (e.g. https://yoursite.com/OneSignalSDKWorker.js) — OneSignal looks for
-  it there by default. -->
+<!-- ===== OneSignal Push Notifications SDK ===== -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 </head>
 <body>
+
+<!-- ===== Modal חסימת התראות חובה ===== -->
+<div class="modal-backdrop hidden" id="pushPromptModal" style="z-index: 999; backdrop-filter: blur(8px);">
+  <div class="modal" style="text-align: center;">
+    <div style="font-size: 40px; margin-bottom: 10px;">🔔</div>
+    <h3>אישור התראות להתחלת שימוש</h3>
+    <div class="modal-sub" style="margin-top: 8px; line-height: 1.5;">
+      כדי להשתתף באתגר הקבוצתי לקבל ולהתריע בזמן אמת, חובה לאשר התראות לטלפון.
+    </div>
+    <div style="margin-top: 20px;">
+      <button class="btn btn-primary" id="enablePushBtn">אישור וקבלת התראות</button>
+    </div>
+  </div>
+</div>
 
 <div class="horizon">
   <svg viewBox="0 0 1000 64" preserveAspectRatio="none">
@@ -795,6 +802,91 @@ import {
   arrayUnion, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+// ---------- OneSignal Settings ----------
+const ONESIGNAL_APP_ID = "YOUR_ONESIGNAL_APP_ID"; // החלף ב-App ID האמיתי שלך
+const ONESIGNAL_REST_API_KEY = "YOUR_ONESIGNAL_REST_API_KEY"; // החלף ב-REST API Key האמיתי שלך
+
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function(OneSignal) {
+  await OneSignal.init({
+    appId: ONESIGNAL_APP_ID,
+    autoRegister: false
+  });
+
+  checkPushPermission();
+});
+
+async function checkPushPermission() {
+  const isEnabled = await window.OneSignal.Notifications.permission;
+  if (!isEnabled) {
+    document.getElementById('pushPromptModal').classList.remove('hidden');
+  } else {
+    document.getElementById('pushPromptModal').classList.add('hidden');
+  }
+}
+
+document.getElementById('enablePushBtn').addEventListener('click', async () => {
+  try {
+    await window.OneSignal.Notifications.requestPermission();
+    const isEnabled = await window.OneSignal.Notifications.permission;
+    if (isEnabled) {
+      document.getElementById('pushPromptModal').classList.add('hidden');
+      if (currentUser && currentUser.phone) {
+        window.OneSignal.login(currentUser.phone);
+      }
+    } else {
+      alert("חובה לאשר התראות דפדפן כדי להשתמש באתר!");
+    }
+  } catch(e) {
+    console.error(e);
+  }
+});
+
+// שליחת התראה לכולם
+async function sendNotificationToAll(messageText) {
+  try {
+    await fetch("https://onesignal.com/api/v1/notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "Basic " + ONESIGNAL_REST_API_KEY
+      },
+      body: JSON.stringify({
+        app_id: ONESIGNAL_APP_ID,
+        included_segments: ["All"],
+        contents: { "he": messageText, "en": messageText },
+        headings: { "he": "Go On Stop • עדכון אתגר", "en": "Go On Stop Update" }
+      })
+    });
+  } catch (err) {
+    console.error("OneSignal Error:", err);
+  }
+}
+
+// שליחת התראה למשתמש ספציפי
+async function sendNotificationToUser(targetPhone, messageText) {
+  try {
+    await fetch("https://onesignal.com/api/v1/notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "Basic " + ONESIGNAL_REST_API_KEY
+      },
+      body: JSON.stringify({
+        app_id: ONESIGNAL_APP_ID,
+        include_aliases: {
+          external_id: [targetPhone]
+        },
+        target_channel: "push",
+        contents: { "he": messageText, "en": messageText },
+        headings: { "he": "💪 קיבלת עידוד חדש!", "en": "New Encouragement!" }
+      })
+    });
+  } catch (err) {
+    console.error("OneSignal Error:", err);
+  }
+}
+
 const firebaseConfig = {
   apiKey: "AIzaSyDd8edyyW3JLtakSSKwzu5KdNSHXiSER94",
   authDomain: "aloneiabbago-on.firebaseapp.com",
@@ -987,6 +1079,14 @@ async function enterApp(){
   loginScreen.classList.add('hidden');
   mainScreen.classList.remove('hidden');
   document.getElementById('chipName').textContent = currentUser.name;
+  
+  // רישום מזהה המשתמש ל-OneSignal לשליחת התראות אישיות
+  if (window.OneSignal && currentUser.phone && !currentUser.isAdmin) {
+    window.OneSignalDeferred.push(function(OneSignal) {
+      OneSignal.login(currentUser.phone);
+    });
+  }
+
   if(currentUser.isAdmin){
     document.getElementById('adminTabBtn').classList.remove('hidden');
     document.querySelector('#tab-dashboard .panel').classList.add('hidden'); // hide profile-edit panel for admin
@@ -1206,6 +1306,10 @@ document.getElementById('sendEncourage').addEventListener('click', async ()=>{
       bonusPoints: newBonus,
       lastEncourageDate: todayKey
     });
+
+    // שליחת התראת פוש ספציפית למקבל העידוד
+    sendNotificationToUser(encourageTargetId, `💪 קיבלת עידוד מ-${currentUser.name}!\n"${text}"`);
+
     showToast("העידוד נשלח! קיבלת 50 נקודות בונוס 🎉");
     encourageModal.classList.add('hidden');
   }catch(err){
@@ -1229,6 +1333,10 @@ document.getElementById('confirmBreak').addEventListener('click', async ()=>{
       startTime: Date.now(),
       bonusPoints: 0
     });
+
+    // שליחת התראת פוש לכל המשתמשים באפליקציה על השבירה
+    sendNotificationToAll(`💔 מישהו נשבר באתגר!\n${currentUser.name} נשבר/ה והניקוד שלו/ה אופס. כולנו איתו/ה!`);
+
     showToast("האתגר אופס. בהצלחה בהתחלה החדשה 💪");
   }catch(err){
     console.error(err);
