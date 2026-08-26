@@ -1335,15 +1335,20 @@ document.getElementById('confirmBreak').addEventListener('click', async ()=>{
     });
 
     // שליחת התראת פוש לכל המשתמשים באפליקציה על השבירה
-    sendNotificationToAll(`💔 מישהו נשבר באתגר!\n${currentUser.name} נשבר/ה והניקוד שלו/ה אופס. כולנו איתו/ה!`);
-
-    showToast("האתגר אופס. בהצלחה בהתחלה החדשה 💪");
-  }catch(err){
-    console.error(err);
-    showToast("שגיאה באיפוס");
-  }
-  breakModal.classList.add('hidden');
-});
+async function sendNotificationToUser(title, message) {
+  OneSignal.push(function() {
+    OneSignal.postNotification({
+      app_id: "YOUR_ONESIGNAL_APP_ID", // שים פה את ה-App ID שלך
+      included_segments: ["All"],
+      headings: {"en": title || "התראה"},
+      contents: {"en": message || "מישהו נשבר!"}
+    }).then(function(response) {
+      console.log("ההתראה נשלחה בהצלחה:", response);
+    }).catch(function(error) {
+      console.error("שגיאה בשליחה:", error);
+    });
+  });
+}
 
 // ---------------- admin ----------------
 function renderAdmin(){
