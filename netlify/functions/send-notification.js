@@ -1,26 +1,16 @@
 exports.handler = async (event, context) => {
-  // אישור בקשות CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS'
   };
 
-  // מענה לבקשת preflight של הדפדפן
   if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers,
-      body: ''
-    };
+    return { statusCode: 200, headers, body: '' };
   }
 
   if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      headers,
-      body: JSON.stringify({ error: 'Method Not Allowed' })
-    };
+    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
   try {
@@ -33,11 +23,10 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ error: 'Missing ONESIGNAL_REST_API_KEY in environment variables' })
+        body: JSON.stringify({ error: 'Missing ONESIGNAL_REST_API_KEY in Netlify environment variables' })
       };
     }
 
-    // בנית גוף הבקשה ל-OneSignal
     const payload = {
       app_id: appId,
       contents: contents || { en: "Notification" },
@@ -47,9 +36,10 @@ exports.handler = async (event, context) => {
     if (include_player_ids && include_player_ids.length > 0) {
       payload.include_player_ids = include_player_ids;
     } else {
-      payload.included_segments = ["Subscribers"]; // שליחה לכל המנויים
+      payload.included_segments = ["Subscribers"];
     }
 
+    // Await מלא לבקשה מול OneSignal
     const response = await fetch('https://onesignal.com/api/v1/notifications', {
       method: 'POST',
       headers: {
