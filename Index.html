@@ -341,7 +341,13 @@
     white-space:nowrap;
   }
   .encourage-btn:not(:disabled):hover{border-color:var(--accent-sage);color:var(--accent-sage);}
-  .encourage-btn:disabled{opacity:0.4;cursor:not-allowed;}
+  .encourage-btn:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+    border-color:transparent;
+    background:rgba(255,255,255,0.04);
+    color:var(--text-muted);
+  }
 
   /* ---------- admin ---------- */
   .admin-row{
@@ -510,24 +516,17 @@
   }
 </style>
 
-<!-- ===== OneSignal Push Notifications SDK ===== -->
+<!-- ===== OneSignal Push Notifications SDK =====
+  IMPORTANT: replace ONESIGNAL_APP_ID below (in the script block near the
+  bottom of this file) with your real OneSignal App ID from
+  Settings -> Keys & IDs in the OneSignal dashboard.
+  Also make sure OneSignalSDKWorker.js (from the SDK zip you uploaded) is
+  extracted and placed at the ROOT of your site, next to this index.html
+  (e.g. https://yoursite.com/OneSignalSDKWorker.js) — OneSignal looks for
+  it there by default. -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 </head>
 <body>
-
-<!-- ===== Modal חסימת התראות חובה ===== -->
-<div class="modal-backdrop hidden" id="pushPromptModal" style="z-index: 999; backdrop-filter: blur(8px);">
-  <div class="modal" style="text-align: center;">
-    <div style="font-size: 40px; margin-bottom: 10px;">🔔</div>
-    <h3>אישור התראות להתחלת שימוש</h3>
-    <div class="modal-sub" style="margin-top: 8px; line-height: 1.5;">
-      כדי להשתתף באתגר הקבוצתי לקבל ולהתריע בזמן אמת, חובה לאשר התראות לטלפון.
-    </div>
-    <div style="margin-top: 20px;">
-      <button class="btn btn-primary" id="enablePushBtn">אישור וקבלת התראות</button>
-    </div>
-  </div>
-</div>
 
 <div class="horizon">
   <svg viewBox="0 0 1000 64" preserveAspectRatio="none">
@@ -638,7 +637,7 @@
         </div>
 
         <div class="break-row">
-          <p>נשברת? אל תתביישי/תתבייש — מתחילים שוב, זה חלק מהדרך.</p>
+          <p>נשברת? אל תתבייש — מתחילים שוב, זה חלק מהדרך.</p>
           <button id="breakBtn" class="btn btn-danger">💔 נשברתי</button>
         </div>
       </div>
@@ -673,22 +672,22 @@
       <div class="panel">
         <div class="section-title">📖 פסוקים לחיזוק ולמחשבה</div>
         <div class="verse-card">
-          <div class="verse-text">״וַיֵּדַע אוֹנָן כִּי לֹא לוֹ יִהְיֶה הַזָּרַע, וְהָיָה אִם בָּא אֶל אֵשֶׁת אָחִיו וְשִׁחֵת אַרְצָה לְבִלְתִּי נְתָן זֶרַע לְאָחִיו. וַיֵּרַע בְּעֵינֵי ה' אֲשֶׁר עָשָׂה וַיָּמֶת גַּם אֹתוֹ.״</div>
-          <div class="verse-src">בראשית לח, ט-י</div>
-          <div class="verse-note">המקור המרכזי בתורה לחומרת העניין — התורה מלמדת אותנו עד כמה הדבר יקר ורציני בעיני הבורא.</div>
+          <div class="verse-text">"נָצֹר לְשׁוֹנְךָ מֵרָע וּשְׂפָתֶיךָ מִדַּבֵּר מִרְמָה. סוּר מֵרָע וַעֲשֵׂה טוֹב בַּקֵּשׁ שָׁלוֹם וְרָדְפֵהוּ."</div>
+          <div class="verse-src">תהילים ל"ד, י"ד-ט"ו</div>
+          <div class="verse-note">הדרך לשמירה על טהרה מתחילה בסור מרע – בהתרחקות מהפיתוי, וממשיכה בעשיית טוב ובמילוי הזמן בעשייה חיובית.</div>
         </div>
         <div class="verse-card">
-          <div class="verse-text">״קְדֹשִׁים תִּהְיוּ כִּי קָדוֹשׁ אֲנִי ה' אֱלֹקֵיכֶם.״</div>
+          <div class="verse-text">"קְדֹשִׁים תִּהְיוּ כִּי קָדוֹשׁ אֲנִי ה' אֱלֹקֵיכֶם."</div>
           <div class="verse-src">ויקרא יט, ב</div>
           <div class="verse-note">אנחנו מוזמנים לחיים של קדושה — לא כעונש, אלא כהזדמנות להידמות לבורא.</div>
         </div>
         <div class="verse-card">
-          <div class="verse-text">״מִכָּל מִשְׁמָר נְצֹר לִבֶּךָ כִּי מִמֶּנּוּ תּוֹצְאוֹת חַיִּים.״</div>
+          <div class="verse-text">"מִכָּל מִשְׁמָר נְצֹר לִבֶּךָ כִּי מִמֶּנּוּ תּוֹצְאוֹת חַיִּים."</div>
           <div class="verse-src">משלי ד, כג</div>
           <div class="verse-note">הלב שלנו הוא המקור לכל מה שאנחנו עושים — שמירה עליו היא שמירה על כל החיים שלנו.</div>
         </div>
         <div class="verse-card">
-          <div class="verse-text">״לֵב טָהוֹר בְּרָא לִי אֱלֹקִים וְרוּחַ נָכוֹן חַדֵּשׁ בְּקִרְבִּי.״</div>
+          <div class="verse-text">"לֵב טָהוֹר בְּרָא לִי אֱלֹקִים וְרוּחַ נָכוֹן חַדֵּשׁ בְּקִרְבִּי."</div>
           <div class="verse-src">תהלים נא, יב</div>
           <div class="verse-note">גם דוד המלך נפל וקם — הדלת לחזרה וטהרה תמיד פתוחה, בכל רגע ובכל יום מחדש.</div>
         </div>
@@ -702,8 +701,8 @@
             <div class="t-body">הרמב"ם מלמד שהאדם נבנה על ידי הרגליו — כל פעם שאנחנו מתגברים על יצר, אנחנו לא רק "לא עושים עבירה", אלא ממש בונים בתוכנו הרגל חדש של שליטה עצמית וחוזק אופי.</div>
           </div>
           <div class="teaching-item">
-            <div class="t-title">קדושה כפסגת הסולם</div>
-            <div class="t-body">ב"מסילת ישרים" הקדושה מתוארת כמדרגה העליונה בסולם העלייה הרוחנית של האדם — לא נקודת התחלה, אלא יעד ששווה להתאמץ אליו לאורך זמן, צעד אחר צעד.</div>
+            <div class="t-title">שבירת התאווה והגברת השכל</div>
+            <div class="t-body">חכמי המוסר והחסידות מלמדים כי מלחמת היצר היא המאבק בין הרגש והתאווה הרגעית לבין השכל והנשמה. ככל שהאדם מנהיג את חייו לפי השכל והערכים, הוא משתחרר מהשתעבדות לדחפים חולפים.</div>
           </div>
           <div class="teaching-item">
             <div class="t-title">כל ניצחון קטן נשאר לנצח</div>
@@ -744,9 +743,9 @@
 <div class="modal-backdrop hidden" id="encourageModal">
   <div class="modal">
     <h3>📣 שליחת עידוד</h3>
-    <div class="modal-sub">שולח/ת עידוד ל<span id="encourageTargetName">-</span>. תקבל/י 50 נקודות בונוס!</div>
+    <div class="modal-sub">שולח עידוד ל<span id="encourageTargetName">-</span>. תקבל 50 נקודות בונוס!</div>
     <div class="phrase-list" id="phraseList"></div>
-    <textarea id="customPhrase" placeholder="או כתבו הודעה אישית משלכם..."></textarea>
+    <textarea id="customPhrase" placeholder="או כתוב הודעה אישית משלך..."></textarea>
     <div class="modal-actions">
       <button class="btn btn-ghost" id="cancelEncourage">ביטול</button>
       <button class="btn btn-primary" id="sendEncourage">שליחה</button>
@@ -758,7 +757,7 @@
 <div class="modal-backdrop hidden" id="breakModal">
   <div class="modal">
     <h3>💔 איפוס האתגר</h3>
-    <div class="modal-sub">האם את/ה בטוח/ה? הפעולה תאפס את הטיימר, הרצף וניקוד הבונוס שלך לאפס. ניקוד הבסיס יתחיל להיספר מחדש מעכשיו.</div>
+    <div class="modal-sub">האם אתה בטוח? הפעולה תאפס את הטיימר, הרצף וניקוד הבונוס שלך לאפס. ניקוד הבסיס יתחיל להיספר מחדש מעכשיו.</div>
     <div class="modal-actions">
       <button class="btn btn-ghost" id="cancelBreak">ביטול</button>
       <button class="btn btn-danger" id="confirmBreak">כן, נשברתי</button>
@@ -802,91 +801,6 @@ import {
   arrayUnion, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ---------- OneSignal Settings ----------
-const ONESIGNAL_APP_ID = "YOUR_ONESIGNAL_APP_ID"; // החלף ב-App ID האמיתי שלך
-const ONESIGNAL_REST_API_KEY = "YOUR_ONESIGNAL_REST_API_KEY"; // החלף ב-REST API Key האמיתי שלך
-
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-OneSignalDeferred.push(async function(OneSignal) {
-  await OneSignal.init({
-    appId: ONESIGNAL_APP_ID,
-    autoRegister: false
-  });
-
-  checkPushPermission();
-});
-
-async function checkPushPermission() {
-  const isEnabled = await window.OneSignal.Notifications.permission;
-  if (!isEnabled) {
-    document.getElementById('pushPromptModal').classList.remove('hidden');
-  } else {
-    document.getElementById('pushPromptModal').classList.add('hidden');
-  }
-}
-
-document.getElementById('enablePushBtn').addEventListener('click', async () => {
-  try {
-    await window.OneSignal.Notifications.requestPermission();
-    const isEnabled = await window.OneSignal.Notifications.permission;
-    if (isEnabled) {
-      document.getElementById('pushPromptModal').classList.add('hidden');
-      if (currentUser && currentUser.phone) {
-        window.OneSignal.login(currentUser.phone);
-      }
-    } else {
-      alert("חובה לאשר התראות דפדפן כדי להשתמש באתר!");
-    }
-  } catch(e) {
-    console.error(e);
-  }
-});
-
-// שליחת התראה לכולם
-async function sendNotificationToAll(messageText) {
-  try {
-    await fetch("https://onesignal.com/api/v1/notifications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "Basic " + ONESIGNAL_REST_API_KEY
-      },
-      body: JSON.stringify({
-        app_id: ONESIGNAL_APP_ID,
-        included_segments: ["All"],
-        contents: { "he": messageText, "en": messageText },
-        headings: { "he": "Go On Stop • עדכון אתגר", "en": "Go On Stop Update" }
-      })
-    });
-  } catch (err) {
-    console.error("OneSignal Error:", err);
-  }
-}
-
-// שליחת התראה למשתמש ספציפי
-async function sendNotificationToUser(targetPhone, messageText) {
-  try {
-    await fetch("https://onesignal.com/api/v1/notifications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "Basic " + ONESIGNAL_REST_API_KEY
-      },
-      body: JSON.stringify({
-        app_id: ONESIGNAL_APP_ID,
-        include_aliases: {
-          external_id: [targetPhone]
-        },
-        target_channel: "push",
-        contents: { "he": messageText, "en": messageText },
-        headings: { "he": "💪 קיבלת עידוד חדש!", "en": "New Encouragement!" }
-      })
-    });
-  } catch (err) {
-    console.error("OneSignal Error:", err);
-  }
-}
-
 const firebaseConfig = {
   apiKey: "AIzaSyDd8edyyW3JLtakSSKwzu5KdNSHXiSER94",
   authDomain: "aloneiabbago-on.firebaseapp.com",
@@ -904,12 +818,12 @@ const ADMIN_PASSWORD = "4468800";
 const LS_KEY = "abba_gostop_phone";
 
 const ENCOURAGE_PHRASES = [
-  "כל הכבוד! את/ה חזק/ה מכפי שאת/ה חושב/ת 💪",
-  "יום נוסף, ניצחון נוסף. תמשיך/י ככה!",
+  "כל הכבוד! אתה חזק מכפי שאתה חושב 💪",
+  "יום נוסף, ניצחון נוסף. תמשיך ככה!",
   "אני גאה בך על ההתמדה שלך 🙌",
-  "זוכר/ת למה התחלת. תישאר/י שם.",
+  "זכור למה התחלת. תישאר שם.",
   "אתגר קשה שווה תוצאה גדולה. יאללה!",
-  "הרצף שלך מרשים, אל תעצור/י עכשיו!",
+  "הרצף שלך מרשים, אל תעצור עכשיו!",
   "אנחנו בזה ביחד, כל הכבוד על החוזק 🔥",
   "עוד יום, עוד צעד קדימה. גאה בך!"
 ];
@@ -1044,7 +958,7 @@ loginForm.addEventListener('submit', async (e)=>{
     await enterApp();
   }catch(err){
     console.error(err);
-    showToast("שגיאה בהתחברות, נסה/י שוב");
+    showToast("שגיאה בהתחברות, נסה שוב");
   }
 });
 
@@ -1079,14 +993,6 @@ async function enterApp(){
   loginScreen.classList.add('hidden');
   mainScreen.classList.remove('hidden');
   document.getElementById('chipName').textContent = currentUser.name;
-  
-  // רישום מזהה המשתמש ל-OneSignal לשליחת התראות אישיות
-  if (window.OneSignal && currentUser.phone && !currentUser.isAdmin) {
-    window.OneSignalDeferred.push(function(OneSignal) {
-      OneSignal.login(currentUser.phone);
-    });
-  }
-
   if(currentUser.isAdmin){
     document.getElementById('adminTabBtn').classList.remove('hidden');
     document.querySelector('#tab-dashboard .panel').classList.add('hidden'); // hide profile-edit panel for admin
@@ -1215,15 +1121,24 @@ function renderLeaderboard(){
     const isMe = !currentUser.isAdmin && u.id === currentUser.phone;
     let rankClass = '';
     if(rank===1) rankClass='top1'; else if(rank===2) rankClass='top2'; else if(rank===3) rankClass='top3';
-    const canEncourage = !currentUser.isAdmin && !isMe && !usedToday;
-    const btnDisabled = (currentUser.isAdmin || isMe || usedToday) ? 'disabled' : '';
-    const btnLabel = usedToday && !isMe ? '🔒 נוצל היום' : '📣 עודד';
+    
+    let btnDisabledAttr = '';
+    let btnText = '📣 עודד';
+
+    if (currentUser.isAdmin || isMe) {
+      btnDisabledAttr = 'disabled';
+      btnText = isMe ? 'זה אתה' : '📣 עודד';
+    } else if (usedToday) {
+      btnDisabledAttr = 'disabled';
+      btnText = '🔒 נוצל היום';
+    }
+
     return `<div class="lb-row ${isMe?'me':''}">
       <div class="lb-identity">
         <div class="lb-rank ${rankClass}">${rank}</div>
         <div class="lb-name-link" data-profile="${u.id}" style="display:flex;flex-shrink:0;">${avatarHtml(u, 'avatar-md')}</div>
         <div class="lb-info">
-          <div class="lb-name lb-name-link" data-profile="${u.id}">${escapeHtml(u.name||'ללא שם')}${isMe?' (את/ה)':''}</div>
+          <div class="lb-name lb-name-link" data-profile="${u.id}">${escapeHtml(u.name||'ללא שם')}${isMe?' (אתה)':''}</div>
           <div class="lb-meta">🔥 ${u.stats.fullDays} ימי רצף</div>
         </div>
       </div>
@@ -1232,7 +1147,7 @@ function renderLeaderboard(){
           <div class="n">${u.stats.total}</div>
           <div class="l">נקודות</div>
         </div>
-        ${currentUser.isAdmin ? '' : `<button class="encourage-btn" data-target="${u.id}" data-name="${escapeHtml(u.name||'')}" ${btnDisabled}>${isMe?'זה את/ה':btnLabel}</button>`}
+        ${currentUser.isAdmin ? '' : `<button class="encourage-btn" data-target="${u.id}" data-name="${escapeHtml(u.name||'')}" ${btnDisabledAttr}>${btnText}</button>`}
       </div>
     </div>`;
   }).join('');
@@ -1285,7 +1200,7 @@ customPhraseEl.addEventListener('input', ()=>{
 
 document.getElementById('sendEncourage').addEventListener('click', async ()=>{
   const text = customPhraseEl.value.trim() || selectedPhrase;
-  if(!text){ showToast("בחר/י משפט או כתוב/י הודעה"); return; }
+  if(!text){ showToast("בחר משפט או כתוב הודעה"); return; }
   if(!encourageTargetId) return;
 
   const todayKey = todayStr();
@@ -1306,10 +1221,6 @@ document.getElementById('sendEncourage').addEventListener('click', async ()=>{
       bonusPoints: newBonus,
       lastEncourageDate: todayKey
     });
-
-    // שליחת התראת פוש ספציפית למקבל העידוד
-    sendNotificationToUser(encourageTargetId, `💪 קיבלת עידוד מ-${currentUser.name}!\n"${text}"`);
-
     showToast("העידוד נשלח! קיבלת 50 נקודות בונוס 🎉");
     encourageModal.classList.add('hidden');
   }catch(err){
@@ -1333,10 +1244,6 @@ document.getElementById('confirmBreak').addEventListener('click', async ()=>{
       startTime: Date.now(),
       bonusPoints: 0
     });
-
-    // שליחת התראת פוש לכל המשתמשים באפליקציה על השבירה
-    sendNotificationToAll(`💔 מישהו נשבר באתגר!\n${currentUser.name} נשבר/ה והניקוד שלו/ה אופס. כולנו איתו/ה!`);
-
     showToast("האתגר אופס. בהצלחה בהתחלה החדשה 💪");
   }catch(err){
     console.error(err);
@@ -1516,7 +1423,9 @@ const CHIZUK_QUOTES = [
   { text: "אתה בונה כרגע הרגלים שילוו אותך לכל החיים — כולל לזוגיות שלך בעתיד.", src: "" },
   { text: "אם נפלת — קום, נשום, ותתחיל שוב. בדיוק בשביל זה יש כפתור 'נשברתי' באתגר הזה.", src: "" },
   { text: "הרמב״ם מלמד שאדם נבנה מהרגליו. כל התגברות היא לבנה נוספת באדם שאתה רוצה להיות.", src: "בהשראת הרמב\"ם, הלכות דעות" },
-  { text: "אתה חזק יותר מהדחף הרגעי הזה. תן לזמן לעבור, ותראה שזה נכון.", src: "" }
+  { text: "אתה חזק יותר מהדחף הרגעי הזה. תן לזמן לעבור, ותראה שזה נכון.", src: "" },
+  { text: "נצור לשונך מרע ושפתיך מדבר מרמה. סור מרע ועשה טוב בקש שלום ורדפהו.", src: "תהילים ל\"ד, י\"ד-ט\"ו" },
+  { text: "מלחמת היצר היא המאבק בין התאווה הרגעית לשכל ולנשמה. ככל שתנהיג את חייך לפי השכל, תשתחרר מההשתעבדות לדחפים חולפים.", src: "תורת המוסר והחסידות" }
 ];
 
 document.getElementById('newQuoteBtn').addEventListener('click', ()=>{
