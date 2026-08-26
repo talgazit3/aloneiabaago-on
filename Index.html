@@ -513,12 +513,14 @@
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "YOUR_ONESIGNAL_APP_ID", // החלף ב-App ID האמיתי שלך מ-OneSignal
-      notifyButton: {
-        enable: true,
-      },
-    });
+    if (window.ONESIGNAL_APP_ID) {
+      await OneSignal.init({
+        appId: window.ONESIGNAL_APP_ID,
+        notifyButton: {
+          enable: true,
+        },
+      });
+    }
   });
 </script>
 </head>
@@ -831,28 +833,22 @@ let selectedPhrase = null;
 let encourageTargetId = null;
 let tickInterval = null;
 
-// ---------------- OneSignal Helper ----------------
+// ---------------- OneSignal Helper (Proxy via Netlify Function) ----------------
 async function sendPushNotification(targetPhone, senderName, messageText) {
-  const ONESIGNAL_REST_API_KEY = "l6wg5npg2esbutco2ooaaob2v"; // החלף במפתח ה-API האמיתי שלך
-  const ONESIGNAL_APP_ID = "648f4209-794a-4370-927c-a78fb6790b53";     // החלף ב-App ID האמיתי שלך
-
   try {
-    await fetch("https://onesignal.com/api/v1/notifications", {
+    const response = await fetch("/.netlify/functions/send-notification", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": `Basic ${ONESIGNAL_REST_API_KEY}`
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        app_id: "648f4209-794a-4370-927c-a78fb6790b53",
-        include_aliases: {
-          external_id: [targetPhone]
-        },
-        target_channel: "push",
-        headings: { "he": `קיבלת חיזוק מ-${senderName}! 💪` },
-        contents: { "he": messageText }
+        targetPhone,
+        senderName,
+        messageText
       })
     });
+    const result = await response.json();
+    console.log("Push Notification Result:", result);
   } catch (err) {
     console.error("שגיאה בשליחת התראת Push:", err);
   }
@@ -1253,7 +1249,7 @@ document.getElementById('sendEncourage').addEventListener('click', async ()=>{
       lastEncourageDate: todayKey
     });
 
-    // Send Push Notification
+    // Send Push Notification via Proxy
     sendPushNotification(encourageTargetId, currentUser.name, text);
 
     showToast("העידוד נשלח! קיבלת 50 נקודות בונוס 🎉");
