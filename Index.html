@@ -844,7 +844,7 @@ async function sendPushNotification(targetPhone, senderName, messageText) {
         "Authorization": `Basic ${ONESIGNAL_REST_API_KEY}`
       },
       body: JSON.stringify({
-        app_id: 648f4209-794a-4370-927c-a78fb6790b53,
+        app_id: "648f4209-794a-4370-927c-a78fb6790b53",
         include_aliases: {
           external_id: [targetPhone]
         },
