@@ -506,25 +506,21 @@
     transition:transform .3s ease;
   }
   #toast.show{transform:translateX(-50%) translateY(0);}
-
-  @media (max-width:520px){
-    .hero{gap:18px;}
-    .ring-wrap{width:150px;height:150px;}
-    .ring-center .streak-num{font-size:30px;}
-    .timer-cell .num{font-size:18px;}
-    .score-row{gap:14px;}
-  }
 </style>
 
-<!-- ===== OneSignal Push Notifications SDK =====
-  IMPORTANT: replace ONESIGNAL_APP_ID below (in the script block near the
-  bottom of this file) with your real OneSignal App ID from
-  Settings -> Keys & IDs in the OneSignal dashboard.
-  Also make sure OneSignalSDKWorker.js (from the SDK zip you uploaded) is
-  extracted and placed at the ROOT of your site, next to this index.html
-  (e.g. https://yoursite.com/OneSignalSDKWorker.js) — OneSignal looks for
-  it there by default. -->
+<!-- ===== OneSignal Push Notifications SDK ===== -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "YOUR_ONESIGNAL_APP_ID", // החלף ב-App ID האמיתי שלך מ-OneSignal
+      notifyButton: {
+        enable: true,
+      },
+    });
+  });
+</script>
 </head>
 <body>
 
@@ -835,6 +831,33 @@ let selectedPhrase = null;
 let encourageTargetId = null;
 let tickInterval = null;
 
+// ---------------- OneSignal Helper ----------------
+async function sendPushNotification(targetPhone, senderName, messageText) {
+  const ONESIGNAL_REST_API_KEY = "YOUR_REST_API_KEY"; // החלף במפתח ה-API האמיתי שלך
+  const ONESIGNAL_APP_ID = "YOUR_ONESIGNAL_APP_ID";     // החלף ב-App ID האמיתי שלך
+
+  try {
+    await fetch("https://onesignal.com/api/v1/notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": `Basic ${ONESIGNAL_REST_API_KEY}`
+      },
+      body: JSON.stringify({
+        app_id: ONESIGNAL_APP_ID,
+        include_aliases: {
+          external_id: [targetPhone]
+        },
+        target_channel: "push",
+        headings: { "he": `קיבלת חיזוק מ-${senderName}! 💪` },
+        contents: { "he": messageText }
+      })
+    });
+  } catch (err) {
+    console.error("שגיאה בשליחת התראת Push:", err);
+  }
+}
+
 // ---------------- utils ----------------
 function todayStr(){
   const d = new Date();
@@ -993,9 +1016,17 @@ async function enterApp(){
   loginScreen.classList.add('hidden');
   mainScreen.classList.remove('hidden');
   document.getElementById('chipName').textContent = currentUser.name;
+
+  // Login user to OneSignal with their phone number
+  if (window.OneSignalDeferred && currentUser && currentUser.phone && !currentUser.isAdmin) {
+    window.OneSignalDeferred.push(function(OneSignal) {
+      OneSignal.login(currentUser.phone);
+    });
+  }
+
   if(currentUser.isAdmin){
     document.getElementById('adminTabBtn').classList.remove('hidden');
-    document.querySelector('#tab-dashboard .panel').classList.add('hidden'); // hide profile-edit panel for admin
+    document.querySelector('#tab-dashboard .panel').classList.add('hidden');
     switchTab('admin');
   }
   setupUsersListener();
@@ -1221,6 +1252,10 @@ document.getElementById('sendEncourage').addEventListener('click', async ()=>{
       bonusPoints: newBonus,
       lastEncourageDate: todayKey
     });
+
+    // Send Push Notification
+    sendPushNotification(encourageTargetId, currentUser.name, text);
+
     showToast("העידוד נשלח! קיבלת 50 נקודות בונוס 🎉");
     encourageModal.classList.add('hidden');
   }catch(err){
