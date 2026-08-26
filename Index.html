@@ -803,8 +803,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // ---------- OneSignal Settings ----------
-const ONESIGNAL_APP_ID = "648f4209-794a-4370-927c-a78fb6790b53"; // החלף ב-App ID האמיתי שלך
-const ONESIGNAL_REST_API_KEY = "l6wg5npg2esbutco2ooaaob2v"; // החלף ב-REST API Key האמיתי שלך
+const ONESIGNAL_APP_ID = "YOUR_ONESIGNAL_APP_ID"; // החלף ב-App ID האמיתי שלך
+const ONESIGNAL_REST_API_KEY = "YOUR_ONESIGNAL_REST_API_KEY"; // החלף ב-REST API Key האמיתי שלך
 
 window.OneSignalDeferred = window.OneSignalDeferred || [];
 OneSignalDeferred.push(async function(OneSignal) {
@@ -1334,22 +1334,17 @@ document.getElementById('confirmBreak').addEventListener('click', async ()=>{
       bonusPoints: 0
     });
 
-breakButton.addEventListener('click', async () => {
-  try {
-    // await לשליחת ההתראה לכולם
-    await sendNotificationToUser(
-      "💔 מישהו נשבר באתגר!",
-      `${currentUser.name} נשבר/ה והניקוד שלו/ה אופס. כולנו איתו/ה!`
-    );
+    // שליחת התראת פוש לכל המשתמשים באפליקציה על השבירה
+    sendNotificationToAll(`💔 מישהו נשבר באתגר!\n${currentUser.name} נשבר/ה והניקוד שלו/ה אופס. כולנו איתו/ה!`);
 
     showToast("האתגר אופס. בהצלחה בהתחלה החדשה 💪");
-  } catch (err) {
+  }catch(err){
     console.error(err);
     showToast("שגיאה באיפוס");
   }
-  
   breakModal.classList.add('hidden');
 });
+
 // ---------------- admin ----------------
 function renderAdmin(){
   const list = document.getElementById('adminList');
