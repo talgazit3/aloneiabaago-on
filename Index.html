@@ -1334,16 +1334,23 @@ document.getElementById('confirmBreak').addEventListener('click', async ()=>{
       bonusPoints: 0
     });
 
-    // שליחת התראת פוש לכל המשתמשים באפליקציה על השבירה
-    sendNotificationToAll(`💔 מישהו נשבר באתגר!\n${currentUser.name} נשבר/ה והניקוד שלו/ה אופס. כולנו איתו/ה!`);
+async function sendNotificationToUser(title, message, playerIds) {
+  try {
+    const response = await fetch('/.netlify/functions/send-notification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ title, message, playerIds })
+    });
 
-    showToast("האתגר אופס. בהצלחה בהתחלה החדשה 💪");
-  }catch(err){
-    console.error(err);
-    showToast("שגיאה באיפוס");
+    const result = await response.json();
+    console.log('Response:', result);
+    return result;
+  } catch (error) {
+    console.error('Error sending notification:', error);
   }
-  breakModal.classList.add('hidden');
-});
+}
 
 // ---------------- admin ----------------
 function renderAdmin(){
