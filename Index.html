@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>Alonei Abba Stops Gooning</title>
+<title>Alonei Abba • Go On Stop – No Gwene</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -427,6 +427,36 @@
   .profile-timer .cell .unit{font-size:9.5px;color:var(--text-muted);}
   .lb-name-link{cursor:pointer;}
   .lb-name-link:hover{text-decoration:underline;text-decoration-color:var(--accent-gold);}
+
+  /* ---------- chizuk / reinforcement tab ---------- */
+  .chizuk-quote-panel{text-align:center;}
+  .chizuk-quote-box{
+    background:linear-gradient(160deg, rgba(227,165,66,0.10), #0f1318 70%);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:22px 18px;
+    min-height:80px;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .chizuk-quote-text{font-size:16px;font-weight:600;line-height:1.7;}
+  .chizuk-quote-src{font-size:12px;color:var(--accent-gold);margin-top:10px;font-weight:600;}
+  .verse-card{
+    background:#0f1318;border:1px solid var(--border);border-radius:12px;
+    padding:16px 18px;margin-bottom:14px;
+  }
+  .verse-card:last-child{margin-bottom:0;}
+  .verse-text{font-size:16px;line-height:1.8;font-weight:600;color:var(--text-primary);}
+  .verse-src{font-size:12px;color:var(--accent-gold);font-weight:700;margin-top:8px;}
+  .verse-note{font-size:12.5px;color:var(--text-muted);margin-top:8px;line-height:1.6;}
+  .teaching-list{display:flex;flex-direction:column;gap:14px;}
+  .teaching-item{
+    background:#0f1318;border:1px solid var(--border);border-radius:12px;
+    padding:14px 16px;
+  }
+  .t-title{font-size:14.5px;font-weight:700;color:var(--accent-sage);margin-bottom:6px;}
+  .t-body{font-size:13.5px;line-height:1.7;color:var(--text-primary);}
+  .reason-list{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:10px;}
+  .reason-list li{font-size:14px;line-height:1.6;}
   .modal-backdrop{
     position:fixed;inset:0;background:rgba(8,10,12,0.72);
     display:flex;align-items:center;justify-content:center;
@@ -494,9 +524,9 @@
   <!-- ===================== LOGIN ===================== -->
   <div id="loginScreen">
     <div class="login-card">
-      <div class="brand-eyebrow">ויצו נהלל</div>
-      <h1 class="brand-title">Goon Stop <br>No Gwene</h1>
-      <p class="brand-sub">אתגר האוננות של ויצו נהלל</p>
+      <div class="brand-eyebrow">אלוני אבא</div>
+      <h1 class="brand-title">Go On Stop<br>No Gwene</h1>
+      <p class="brand-sub">האתגר הקבוצתי שלנו — כל יום שעובר הוא ניצחון</p>
 
       <form id="loginForm">
         <div class="field">
@@ -517,8 +547,8 @@
   <div id="mainScreen" class="hidden">
     <header class="top">
       <div class="title-block">
-        <h1>Stop Gooning Challenge</h1>
-        <div class="sub">ויצו נהלל · אתגר אוננות</div>
+        <h1>Go On Stop – No Gwene</h1>
+        <div class="sub">אלוני אבא · אתגר קבוצתי</div>
       </div>
       <div class="user-chip">
         <div class="avatar chip-avatar" id="chipAvatar">?</div>
@@ -530,6 +560,7 @@
     <div class="tabs" id="tabs">
       <button class="tab-btn active" data-tab="dashboard">הבקרה שלי</button>
       <button class="tab-btn" data-tab="leaderboard">לוח מובילים</button>
+      <button class="tab-btn" data-tab="chizuk">💪 חיזוקים</button>
       <button class="tab-btn hidden" id="adminTabBtn" data-tab="admin">ניהול</button>
     </div>
 
@@ -590,8 +621,8 @@
         </div>
 
         <div class="break-row">
-          <p>אוננת? אל תתביישי/תתבייש — מתחילים שוב, זה חלק מהדרך.</p>
-          <button id="breakBtn" class="btn btn-danger">💔 אוננתי</button>
+          <p>נשברת? אל תתביישי/תתבייש — מתחילים שוב, זה חלק מהדרך.</p>
+          <button id="breakBtn" class="btn btn-danger">💔 נשברתי</button>
         </div>
       </div>
 
@@ -606,8 +637,78 @@
     <!-- ---- LEADERBOARD ---- -->
     <section id="tab-leaderboard" class="hidden">
       <div class="panel">
-        <div class="section-title">🏆 לוח לא-מאוננים בזמן אמת</div>
+        <div class="section-title">🏆 לוח מובילים בזמן אמת</div>
         <div id="leaderboardList"></div>
+      </div>
+    </section>
+
+    <!-- ---- CHIZUK / REINFORCEMENT ---- -->
+    <section id="tab-chizuk" class="hidden">
+      <div class="panel chizuk-quote-panel">
+        <div class="section-title">✨ מחשבה לרגע הזה</div>
+        <div class="chizuk-quote-box">
+          <div class="chizuk-quote-text" id="randomQuoteText">לחצו על הכפתור לקבלת חיזוק</div>
+          <div class="chizuk-quote-src" id="randomQuoteSrc"></div>
+        </div>
+        <button class="btn btn-primary" id="newQuoteBtn" style="margin-top:14px;">🔄 חיזוק נוסף</button>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">📖 פסוקים לחיזוק ולמחשבה</div>
+        <div class="verse-card">
+          <div class="verse-text">״וַיֵּדַע אוֹנָן כִּי לֹא לוֹ יִהְיֶה הַזָּרַע, וְהָיָה אִם בָּא אֶל אֵשֶׁת אָחִיו וְשִׁחֵת אַרְצָה לְבִלְתִּי נְתָן זֶרַע לְאָחִיו. וַיֵּרַע בְּעֵינֵי ה' אֲשֶׁר עָשָׂה וַיָּמֶת גַּם אֹתוֹ.״</div>
+          <div class="verse-src">בראשית לח, ט-י</div>
+          <div class="verse-note">המקור המרכזי בתורה לחומרת העניין — התורה מלמדת אותנו עד כמה הדבר יקר ורציני בעיני הבורא.</div>
+        </div>
+        <div class="verse-card">
+          <div class="verse-text">״קְדֹשִׁים תִּהְיוּ כִּי קָדוֹשׁ אֲנִי ה' אֱלֹקֵיכֶם.״</div>
+          <div class="verse-src">ויקרא יט, ב</div>
+          <div class="verse-note">אנחנו מוזמנים לחיים של קדושה — לא כעונש, אלא כהזדמנות להידמות לבורא.</div>
+        </div>
+        <div class="verse-card">
+          <div class="verse-text">״מִכָּל מִשְׁמָר נְצֹר לִבֶּךָ כִּי מִמֶּנּוּ תּוֹצְאוֹת חַיִּים.״</div>
+          <div class="verse-src">משלי ד, כג</div>
+          <div class="verse-note">הלב שלנו הוא המקור לכל מה שאנחנו עושים — שמירה עליו היא שמירה על כל החיים שלנו.</div>
+        </div>
+        <div class="verse-card">
+          <div class="verse-text">״לֵב טָהוֹר בְּרָא לִי אֱלֹקִים וְרוּחַ נָכוֹן חַדֵּשׁ בְּקִרְבִּי.״</div>
+          <div class="verse-src">תהלים נא, יב</div>
+          <div class="verse-note">גם דוד המלך נפל וקם — הדלת לחזרה וטהרה תמיד פתוחה, בכל רגע ובכל יום מחדש.</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">🕯️ מחשבות מתורת ישראל</div>
+        <div class="teaching-list">
+          <div class="teaching-item">
+            <div class="t-title">כוח ההרגל</div>
+            <div class="t-body">הרמב"ם מלמד שהאדם נבנה על ידי הרגליו — כל פעם שאנחנו מתגברים על יצר, אנחנו לא רק "לא עושים עבירה", אלא ממש בונים בתוכנו הרגל חדש של שליטה עצמית וחוזק אופי.</div>
+          </div>
+          <div class="teaching-item">
+            <div class="t-title">קדושה כפסגת הסולם</div>
+            <div class="t-body">ב"מסילת ישרים" הקדושה מתוארת כמדרגה העליונה בסולם העלייה הרוחנית של האדם — לא נקודת התחלה, אלא יעד ששווה להתאמץ אליו לאורך זמן, צעד אחר צעד.</div>
+          </div>
+          <div class="teaching-item">
+            <div class="t-title">כל ניצחון קטן נשאר לנצח</div>
+            <div class="t-body">מלמדים חז"ל שכל רגע של התגברות על יצר אינו הולך לאיבוד — הוא נחקק בנפש האדם ובונה בו כוח פנימי שמלווה אותו גם הרבה אחרי הרגע עצמו.</div>
+          </div>
+          <div class="teaching-item">
+            <div class="t-title">התשובה תמיד פתוחה</div>
+            <div class="t-body">גם מי שנכשל פעמים רבות מוזמן להתחיל שוב. אין "יותר מדי מאוחר" — כל רגע הוא הזדמנות חדשה לבחור אחרת, וזו בדיוק המשמעות של כפתור "נשברתי" באתגר הזה: לא כישלון סופי, אלא התחלה חדשה.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">🎯 בשביל מה זה שווה את זה</div>
+        <ul class="reason-list">
+          <li>ראש פנוי, ריכוז וזיכרון טובים יותר</li>
+          <li>כבוד עצמי ותחושת שליטה על החיים שלך</li>
+          <li>קרבה אמיתית יותר לבן/בת הזוג בעתיד, בלי השוואות מזיקות</li>
+          <li>חופש מהרגל שמנהל אותך, במקום שאתה תנהל אותו</li>
+          <li>קרבה רוחנית ותחושת משמעות עמוקה יותר</li>
+          <li>אנרגיה פנויה להשקיע במה שבאמת חשוב לך</li>
+        </ul>
       </div>
     </section>
 
@@ -640,7 +741,7 @@
 <div class="modal-backdrop hidden" id="breakModal">
   <div class="modal">
     <h3>💔 איפוס האתגר</h3>
-    <div class="modal-sub">האם את/ה בטוח/ה? הפעולה תאפס את הטיימר, הרצף וניקוד הבונוס שלך לאפס. ניקוד הבסיס יתחיל להיספר מחדש מעכשיו. אבל אוננת....אז זה שווה להיות כנה עם עצמך אח שלנו</div>
+    <div class="modal-sub">האם את/ה בטוח/ה? הפעולה תאפס את הטיימר, הרצף וניקוד הבונוס שלך לאפס. ניקוד הבסיס יתחיל להיספר מחדש מעכשיו.</div>
     <div class="modal-actions">
       <button class="btn btn-ghost" id="cancelBreak">ביטול</button>
       <button class="btn btn-danger" id="confirmBreak">כן, נשברתי</button>
@@ -894,7 +995,7 @@ document.getElementById('tabs').addEventListener('click',(e)=>{
 });
 function switchTab(tab){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
-  ['dashboard','leaderboard','admin'].forEach(t=>{
+  ['dashboard','leaderboard','chizuk','admin'].forEach(t=>{
     document.getElementById('tab-'+t).classList.toggle('hidden', t!==tab);
   });
 }
@@ -1280,6 +1381,33 @@ document.getElementById('closeProfileView').addEventListener('click', closeProfi
 profileViewModal.addEventListener('click', (e)=>{
   if(e.target === profileViewModal) closeProfileView();
 });
+
+// ---------------- chizuk / reinforcement quotes ----------------
+const CHIZUK_QUOTES = [
+  { text: "כל רגע שבו אתה עוצר ובוחר אחרת — הוא ניצחון שנשאר איתך לתמיד, גם אם איש לא רואה אותו.", src: "" },
+  { text: "היצר מדבר בקול חזק רק ברגע עצמו. תן לרגע הזה לעבור, והוא ייחלש מעצמו.", src: "" },
+  { text: "אתה לא נלחם לבד — כל מי שנמצא איתך באתגר הזה מרגיש בדיוק את אותם רגעים.", src: "" },
+  { text: "קדושים תהיו כי קדוש אני ה' אלוקיכם — זו לא רק מצווה, זו הזמנה להידמות לבורא עולם.", src: "ויקרא יט, ב" },
+  { text: "מכל משמר נצור לבך כי ממנו תוצאות חיים — הלב שלך שווה שמירה.", src: "משלי ד, כג" },
+  { text: "נפילה היא לא הסוף של הסיפור. גם דוד המלך נפל וקם, וכתב לנו שיר על לב טהור שנברא מחדש.", src: "בהשראת תהלים נא" },
+  { text: "כל פעם שאתה מתגבר, אתה לא רק נמנע מעבירה — אתה בונה בתוכך אדם חזק יותר.", src: "" },
+  { text: "השאלה היא לא 'האם אני מושלם' אלא 'האם אני ממשיך לנסות'. וזה בדיוק מה שאתה עושה עכשיו.", src: "" },
+  { text: "תחשוב על הרגע הזה בעוד שנה — תרצה להיזכר שהתגברת, לא שוויתרת.", src: "" },
+  { text: "החופש האמיתי הוא לא לעשות מה שבא לך — הוא לא להיות עבד למה שבא לך.", src: "" },
+  { text: "כל יום נוסף באתגר הוא אבן בניין בזהות חדשה שאתה בונה לעצמך.", src: "" },
+  { text: "אתה בונה כרגע הרגלים שילוו אותך לכל החיים — כולל לזוגיות שלך בעתיד.", src: "" },
+  { text: "אם נפלת — קום, נשום, ותתחיל שוב. בדיוק בשביל זה יש כפתור 'נשברתי' באתגר הזה.", src: "" },
+  { text: "הרמב״ם מלמד שאדם נבנה מהרגליו. כל התגברות היא לבנה נוספת באדם שאתה רוצה להיות.", src: "בהשראת הרמב\"ם, הלכות דעות" },
+  { text: "אתה חזק יותר מהדחף הרגעי הזה. תן לזמן לעבור, ותראה שזה נכון.", src: "" }
+];
+
+document.getElementById('newQuoteBtn').addEventListener('click', ()=>{
+  const q = CHIZUK_QUOTES[Math.floor(Math.random()*CHIZUK_QUOTES.length)];
+  document.getElementById('randomQuoteText').textContent = q.text;
+  document.getElementById('randomQuoteSrc').textContent = q.src || '';
+});
+// show one quote by default when tab first loads
+document.getElementById('newQuoteBtn').click();
 
 function escapeHtml(str){
   const d = document.createElement('div');
