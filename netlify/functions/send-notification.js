@@ -15,22 +15,25 @@ exports.handler = async (event, context) => {
 
   try {
     const data = JSON.parse(event.body);
-    const { appId, contents, headings, include_player_ids } = data;
+    // קבלת הפרמטרים מהלקוח (תומך גם במבנה הישן וגם בחדש)
+    const { targetPhone, senderName, messageText, contents, headings, include_player_ids } = data;
 
     const restApiKey = process.env.ONESIGNAL_REST_API_KEY;
+    // עדיף לשמור את ה-App ID במשתני הסביבה או כסחור קבוע פה
+    const appId = process.env.ONESIGNAL_APP_ID || data.appId; 
 
-    if (!restApiKey) {
+    if (!restApiKey || !appId) {
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ error: 'Missing ONESIGNAL_REST_API_KEY in Netlify environment variables' })
+        body: JSON.stringify({ error: 'Missing ONESIGNAL_REST_API_KEY or ONESIGNAL_APP_ID' })
       };
     }
 
     const payload = {
       app_id: appId,
-      contents: contents || { en: "Notification" },
-      headings: headings || { en: "Notice" }
+      contents: contents || { en: messageText || "Notification" },
+      headings: headings || { en: senderName || "Notice" }
     };
 
     if (include_player_ids && include_player_ids.length > 0) {
@@ -39,7 +42,6 @@ exports.handler = async (event, context) => {
       payload.included_segments = ["Subscribers"];
     }
 
-    // Await מלא לבקשה מול OneSignal
     const response = await fetch('https://onesignal.com/api/v1/notifications', {
       method: 'POST',
       headers: {
