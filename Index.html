@@ -833,8 +833,8 @@ let tickInterval = null;
 
 // ---------------- OneSignal Helper ----------------
 async function sendPushNotification(targetPhone, senderName, messageText) {
-  const ONESIGNAL_REST_API_KEY = "YOUR_REST_API_KEY"; // החלף במפתח ה-API האמיתי שלך
-  const ONESIGNAL_APP_ID = "YOUR_ONESIGNAL_APP_ID";     // החלף ב-App ID האמיתי שלך
+  const ONESIGNAL_REST_API_KEY = "l6wg5npg2esbutco2ooaaob2v"; // החלף במפתח ה-API האמיתי שלך
+  const ONESIGNAL_APP_ID = "648f4209-794a-4370-927c-a78fb6790b53";     // החלף ב-App ID האמיתי שלך
 
   try {
     await fetch("https://onesignal.com/api/v1/notifications", {
@@ -844,7 +844,7 @@ async function sendPushNotification(targetPhone, senderName, messageText) {
         "Authorization": `Basic ${ONESIGNAL_REST_API_KEY}`
       },
       body: JSON.stringify({
-        app_id: ONESIGNAL_APP_ID,
+        app_id: 648f4209-794a-4370-927c-a78fb6790b53,
         include_aliases: {
           external_id: [targetPhone]
         },
