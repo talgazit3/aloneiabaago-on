@@ -1,68 +1,1480 @@
-exports.handler = async (event, context) => {
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS'
-  };
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Alonei Abba • Go On Stop – No Gwene</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#12161b;
+    --bg-panel:#1b2129;
+    --bg-panel-2:#212933;
+    --accent-gold:#e3a542;
+    --accent-gold-dim:#a67b34;
+    --accent-sage:#6f9c86;
+    --text-primary:#f4efe6;
+    --text-muted:#9aa7b0;
+    --border:rgba(244,239,230,0.09);
+    --danger:#c1554d;
+    --danger-dim:#8f3f3a;
+    --radius:16px;
+    --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(227,165,66,0.10), transparent 60%),
+      linear-gradient(180deg, var(--bg-deep), #0d1013 100%);
+    color:var(--text-primary);
+    font-family:'Heebo',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Rubik',sans-serif;}
+  .tabular{font-variant-numeric:tabular-nums;}
+  button{font-family:inherit;cursor:pointer;}
+  input{font-family:inherit;}
 
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers, body: '' };
+  /* ---------- horizon motif ---------- */
+  .horizon{
+    position:relative;
+    height:64px;
+    overflow:hidden;
+    opacity:0.9;
+  }
+  .horizon svg{position:absolute;bottom:0;left:0;width:100%;height:64px;}
+
+  /* ---------- layout shells ---------- */
+  #app{max-width:960px;margin:0 auto;padding:0 16px 60px;}
+  .hidden{display:none !important;}
+
+  /* ---------- login ---------- */
+  #loginScreen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .login-card{
+    width:100%;
+    max-width:420px;
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:32px 28px 28px;
+    box-shadow:var(--shadow);
+    text-align:center;
+  }
+  .brand-eyebrow{
+    color:var(--accent-gold);
+    font-size:13px;
+    letter-spacing:0.12em;
+    font-weight:600;
+    text-transform:uppercase;
+  }
+  .brand-title{
+    font-size:28px;
+    font-weight:800;
+    margin:6px 0 4px;
+    line-height:1.25;
+  }
+  .brand-sub{
+    color:var(--text-muted);
+    font-size:14px;
+    margin-bottom:26px;
+  }
+  .field{
+    text-align:right;
+    margin-bottom:14px;
+  }
+  .field label{
+    display:block;
+    font-size:13px;
+    color:var(--text-muted);
+    margin-bottom:6px;
+  }
+  .field input{
+    width:100%;
+    padding:13px 14px;
+    background:#0f1318;
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--text-primary);
+    font-size:15px;
+    outline:none;
+    transition:border-color .15s;
+  }
+  .field input:focus{border-color:var(--accent-gold);}
+  .btn{
+    border:none;
+    border-radius:10px;
+    padding:13px 18px;
+    font-size:15px;
+    font-weight:700;
+    transition:transform .12s, filter .12s;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{
+    width:100%;
+    background:linear-gradient(180deg, var(--accent-gold), var(--accent-gold-dim));
+    color:#171207;
+    margin-top:6px;
+  }
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text-primary);
+  }
+  .btn-ghost:hover{border-color:var(--accent-gold);}
+  .btn-danger{
+    background:linear-gradient(180deg, var(--danger), var(--danger-dim));
+    color:#fff3f0;
+  }
+  .btn-sm{padding:8px 12px;font-size:13px;border-radius:8px;}
+  .login-hint{
+    margin-top:16px;
+    font-size:12px;
+    color:var(--text-muted);
+    line-height:1.6;
   }
 
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method Not Allowed' }) };
+  /* ---------- header ---------- */
+  header.top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 0 10px;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .title-block h1{
+    font-size:20px;
+    margin:0 0 2px;
+    font-weight:800;
+  }
+  .title-block .sub{font-size:12.5px;color:var(--text-muted);}
+  .user-chip{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--bg-panel);
+    border:1px solid var(--border);
+    padding:8px 14px;
+    border-radius:100px;
+    font-size:13.5px;
+  }
+  .user-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--accent-sage);}
+  .user-chip button{
+    background:none;border:none;color:var(--text-muted);font-size:12px;
+    text-decoration:underline;padding:0;
   }
 
+  /* ---------- tabs ---------- */
+  .tabs{
+    display:flex;
+    gap:6px;
+    background:var(--bg-panel);
+    border:1px solid var(--border);
+    padding:5px;
+    border-radius:12px;
+    margin-bottom:22px;
+  }
+  .tab-btn{
+    flex:1;
+    background:transparent;
+    border:none;
+    color:var(--text-muted);
+    padding:10px 8px;
+    border-radius:9px;
+    font-size:13.5px;
+    font-weight:600;
+    transition:all .15s;
+  }
+  .tab-btn.active{
+    background:linear-gradient(180deg, var(--accent-gold), var(--accent-gold-dim));
+    color:#171207;
+  }
+
+  .panel{
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px;
+    margin-bottom:18px;
+    box-shadow:var(--shadow);
+  }
+
+  /* ---------- dashboard hero ---------- */
+  .hero{
+    display:flex;
+    align-items:center;
+    gap:28px;
+    flex-wrap:wrap;
+    justify-content:center;
+    text-align:center;
+  }
+  .ring-wrap{position:relative;width:190px;height:190px;flex-shrink:0;}
+  .ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .ring-bg{fill:none;stroke:rgba(244,239,230,0.08);stroke-width:10;}
+  .ring-fg{fill:none;stroke:url(#sunGrad);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .4s ease;}
+  .ring-center{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .ring-center .streak-num{font-size:38px;font-weight:900;line-height:1;}
+  .ring-center .streak-label{font-size:11.5px;color:var(--text-muted);margin-top:4px;}
+
+  .timer-block{min-width:220px;}
+  .timer-label{font-size:12.5px;color:var(--text-muted);margin-bottom:8px;letter-spacing:.03em;}
+  .timer-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+  }
+  .timer-cell{
+    background:#0f1318;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 4px;
+  }
+  .timer-cell .num{font-size:22px;font-weight:800;color:var(--accent-gold);}
+  .timer-cell .unit{font-size:10.5px;color:var(--text-muted);margin-top:2px;}
+
+  .score-row{
+    display:flex;
+    justify-content:center;
+    gap:24px;
+    margin-top:20px;
+    flex-wrap:wrap;
+  }
+  .score-item{text-align:center;}
+  .score-item .val{font-size:24px;font-weight:800;}
+  .score-item .lbl{font-size:11.5px;color:var(--text-muted);margin-top:2px;}
+  .score-item.total .val{color:var(--accent-gold);}
+
+  .break-row{
+    text-align:center;
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px dashed var(--border);
+  }
+  .break-row p{font-size:12.5px;color:var(--text-muted);margin:0 0 10px;}
+
+  /* ---------- inbox ---------- */
+  .section-title{
+    font-size:15px;font-weight:700;margin:0 0 12px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .inbox-list{display:flex;flex-direction:column;gap:10px;max-height:340px;overflow-y:auto;}
+  .inbox-item{
+    background:#0f1318;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px 14px;
+  }
+  .inbox-item .from{font-size:12.5px;color:var(--accent-sage);font-weight:700;margin-bottom:4px;}
+  .inbox-item .txt{font-size:14px;line-height:1.5;}
+  .inbox-item .time{font-size:10.5px;color:var(--text-muted);margin-top:6px;}
+  .empty-state{
+    text-align:center;color:var(--text-muted);font-size:13.5px;padding:26px 10px;
+  }
+
+  /* ---------- leaderboard ---------- */
+  .lb-row{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px 12px;
+    background:#0f1318;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px 14px;
+    margin-bottom:10px;
+    transition:border-color .15s;
+  }
+  .lb-row.me{border-color:var(--accent-gold);background:linear-gradient(90deg, rgba(227,165,66,0.12), #0f1318 60%);}
+  .lb-identity{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:1 1 180px;
+    min-width:180px;
+  }
+  .lb-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-shrink:0;
+    margin-inline-start:auto;
+  }
+  .lb-rank{
+    width:34px;height:34px;flex-shrink:0;
+    border-radius:50%;
+    background:var(--bg-panel-2);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:13px;color:var(--text-muted);
+    border:1px solid var(--border);
+  }
+  .lb-rank.top1{background:linear-gradient(180deg,#f2c265,#c98f2a);color:#1a1300;border-color:transparent;}
+  .lb-rank.top2{background:linear-gradient(180deg,#d9d9d9,#a3a3a3);color:#1a1a1a;border-color:transparent;}
+  .lb-rank.top3{background:linear-gradient(180deg,#d69a6a,#a5643a);color:#1a1300;border-color:transparent;}
+  .lb-info{flex:1;min-width:0;}
+  .lb-name{font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .lb-meta{font-size:11.5px;color:var(--text-muted);margin-top:2px;}
+  .lb-score{text-align:center;flex-shrink:0;min-width:56px;}
+  .lb-score .n{font-size:17px;font-weight:800;color:var(--accent-gold);}
+  .lb-score .l{font-size:9.5px;color:var(--text-muted);}
+  .encourage-btn{
+    flex-shrink:0;
+    background:var(--bg-panel-2);
+    border:1px solid var(--border);
+    color:var(--text-primary);
+    padding:9px 12px;
+    border-radius:9px;
+    font-size:12.5px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .encourage-btn:not(:disabled):hover{border-color:var(--accent-sage);color:var(--accent-sage);}
+  .encourage-btn:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+    border-color:transparent;
+    background:rgba(255,255,255,0.04);
+    color:var(--text-muted);
+  }
+
+  /* ---------- admin ---------- */
+  .admin-row{
+    display:flex;align-items:center;gap:10px;
+    background:#0f1318;border:1px solid var(--border);border-radius:10px;
+    padding:10px 12px;margin-bottom:8px;flex-wrap:wrap;
+  }
+  .admin-row input{
+    background:#161b21;border:1px solid var(--border);border-radius:8px;
+    padding:8px 10px;color:var(--text-primary);font-size:13.5px;
+  }
+  .admin-row input.name-input{flex:1;min-width:120px;}
+  .admin-row input.points-input{width:90px;flex-shrink:0;text-align:center;}
+  .admin-row .phone{color:var(--text-muted);font-size:12px;min-width:82px;flex-shrink:0;}
+  .admin-row .points-wrap{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
+  .admin-row .points-wrap label{font-size:9.5px;color:var(--text-muted);text-align:center;}
+  .admin-avatar-upload{position:relative;cursor:pointer;flex-shrink:0;width:36px;height:36px;}
+  .admin-avatar-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+  .admin-avatar-upload .cam-sm{
+    position:absolute;bottom:-3px;left:-3px;
+    width:16px;height:16px;border-radius:50%;
+    background:var(--accent-gold);color:#171207;
+    display:flex;align-items:center;justify-content:center;
+    font-size:9px;border:1.5px solid var(--bg-panel);
+  }
+  .btn-delete{
+    background:transparent;border:1px solid var(--danger-dim);color:var(--danger);
+    padding:8px 12px;border-radius:8px;font-size:12.5px;font-weight:600;flex-shrink:0;
+  }
+  .btn-delete:hover{background:var(--danger);color:#fff3f0;border-color:var(--danger);}
+
+  /* ---------- avatars ---------- */
+  .avatar{
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:#171207;
+    background:linear-gradient(135deg,#f2c265,#e3a542);
+  }
+  .avatar-sm{width:36px;height:36px;font-size:14px;}
+  .avatar-md{width:52px;height:52px;font-size:18px;}
+  .avatar-lg{width:96px;height:96px;font-size:32px;}
+  .chip-avatar{width:26px;height:26px;font-size:11px;}
+
+  /* ---------- profile edit panel ---------- */
+  .profile-edit{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .profile-edit .avatar-upload{position:relative;cursor:pointer;flex-shrink:0;}
+  .profile-edit .avatar-upload input[type=file]{
+    position:absolute;inset:0;opacity:0;cursor:pointer;
+  }
+  .profile-edit .avatar-upload .cam{
+    position:absolute;bottom:-2px;left:-2px;
+    width:26px;height:26px;border-radius:50%;
+    background:var(--accent-gold);color:#171207;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;border:2px solid var(--bg-panel);
+  }
+  .profile-edit-fields{flex:1;min-width:200px;}
+  .name-edit-row{display:flex;gap:8px;align-items:center;}
+  .name-edit-row input{
+    flex:1;padding:10px 12px;background:#0f1318;border:1px solid var(--border);
+    border-radius:9px;color:var(--text-primary);font-size:14px;outline:none;
+  }
+  .name-edit-row input:disabled{opacity:0.5;}
+  .name-edit-row input:focus{border-color:var(--accent-gold);}
+  .lock-note{font-size:11.5px;color:var(--text-muted);margin-top:6px;}
+  .lock-note.locked{color:var(--danger);}
+
+  /* ---------- profile view modal ---------- */
+  .profile-view-head{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .profile-view-name{font-size:18px;font-weight:800;}
+  .profile-view-meta{font-size:12.5px;color:var(--text-muted);margin-top:2px;}
+  .profile-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+  .profile-stat{background:#0f1318;border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;}
+  .profile-stat .v{font-size:19px;font-weight:800;color:var(--accent-gold);}
+  .profile-stat .l{font-size:10.5px;color:var(--text-muted);margin-top:3px;}
+  .profile-timer{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
+  }
+  .profile-timer .cell{background:#0f1318;border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center;}
+  .profile-timer .cell .num{font-size:16px;font-weight:800;}
+  .profile-timer .cell .unit{font-size:9.5px;color:var(--text-muted);}
+  .lb-name-link{cursor:pointer;}
+  .lb-name-link:hover{text-decoration:underline;text-decoration-color:var(--accent-gold);}
+
+  /* ---------- chizuk / reinforcement tab ---------- */
+  .chizuk-quote-panel{text-align:center;}
+  .chizuk-quote-box{
+    background:linear-gradient(160deg, rgba(227,165,66,0.10), #0f1318 70%);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:22px 18px;
+    min-height:80px;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .chizuk-quote-text{font-size:16px;font-weight:600;line-height:1.7;}
+  .chizuk-quote-src{font-size:12px;color:var(--accent-gold);margin-top:10px;font-weight:600;}
+  .verse-card{
+    background:#0f1318;border:1px solid var(--border);border-radius:12px;
+    padding:16px 18px;margin-bottom:14px;
+  }
+  .verse-card:last-child{margin-bottom:0;}
+  .verse-text{font-size:16px;line-height:1.8;font-weight:600;color:var(--text-primary);}
+  .verse-src{font-size:12px;color:var(--accent-gold);font-weight:700;margin-top:8px;}
+  .verse-note{font-size:12.5px;color:var(--text-muted);margin-top:8px;line-height:1.6;}
+  .teaching-list{display:flex;flex-direction:column;gap:14px;}
+  .teaching-item{
+    background:#0f1318;border:1px solid var(--border);border-radius:12px;
+    padding:14px 16px;
+  }
+  .t-title{font-size:14.5px;font-weight:700;color:var(--accent-sage);margin-bottom:6px;}
+  .t-body{font-size:13.5px;line-height:1.7;color:var(--text-primary);}
+  .reason-list{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:10px;}
+  .reason-list li{font-size:14px;line-height:1.6;}
+  .modal-backdrop{
+    position:fixed;inset:0;background:rgba(8,10,12,0.72);
+    display:flex;align-items:center;justify-content:center;
+    z-index:100;padding:18px;
+    backdrop-filter:blur(2px);
+  }
+  .modal{
+    width:100%;max-width:420px;
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:24px;
+    box-shadow:var(--shadow);
+  }
+  .modal h3{margin:0 0 4px;font-size:17px;}
+  .modal .modal-sub{font-size:12.5px;color:var(--text-muted);margin-bottom:16px;}
+  .phrase-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;max-height:220px;overflow-y:auto;}
+  .phrase-opt{
+    text-align:right;
+    background:#0f1318;border:1px solid var(--border);border-radius:9px;
+    padding:10px 12px;font-size:13.5px;color:var(--text-primary);
+  }
+  .phrase-opt.selected{border-color:var(--accent-sage);color:var(--accent-sage);}
+  .modal textarea{
+    width:100%;min-height:70px;background:#0f1318;border:1px solid var(--border);
+    border-radius:9px;color:var(--text-primary);padding:10px 12px;font-size:13.5px;
+    resize:vertical;outline:none;font-family:inherit;
+  }
+  .modal textarea:focus{border-color:var(--accent-gold);}
+  .modal-actions{display:flex;gap:10px;margin-top:16px;}
+  .modal-actions .btn{flex:1;}
+
+  /* ---------- toast ---------- */
+  #toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);
+    background:var(--bg-panel-2);border:1px solid var(--accent-gold);
+    color:var(--text-primary);padding:12px 20px;border-radius:100px;
+    font-size:13.5px;font-weight:600;
+    box-shadow:var(--shadow);
+    z-index:200;
+    transition:transform .3s ease;
+  }
+  #toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+
+<!-- ===== OneSignal Push Notifications SDK ===== -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    if (window.ONESIGNAL_APP_ID) {
+      await OneSignal.init({
+        appId: window.ONESIGNAL_APP_ID,
+        notifyButton: {
+          enable: true,
+        },
+      });
+    }
+  });
+</script>
+</head>
+<body>
+
+<div class="horizon">
+  <svg viewBox="0 0 1000 64" preserveAspectRatio="none">
+    <path d="M0,50 L120,30 L260,44 L400,18 L560,40 L720,26 L860,46 L1000,32 L1000,64 L0,64 Z" fill="#1a2028"/>
+    <circle cx="500" cy="24" r="10" fill="#e3a542" opacity="0.85"/>
+  </svg>
+</div>
+
+<div id="app">
+
+  <!-- ===================== LOGIN ===================== -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="brand-eyebrow">אלוני אבא</div>
+      <h1 class="brand-title">Go On Stop<br>No Gwene</h1>
+      <p class="brand-sub">האתגר הקבוצתי שלנו — כל יום שעובר הוא ניצחון</p>
+
+      <form id="loginForm">
+        <div class="field">
+          <label for="nameInput">שם מלא</label>
+          <input id="nameInput" type="text" placeholder="לדוגמה: ישראל ישראלי" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="phoneInput">מספר טלפון</label>
+          <input id="phoneInput" type="tel" placeholder="050-0000000" autocomplete="tel">
+        </div>
+        <button type="submit" class="btn btn-primary">כניסה לאתגר</button>
+      </form>
+      <div class="login-hint">מספר הטלפון משמש לזיהוי שלך במערכת ונשמר במכשיר זה לכניסה אוטומטית בפעם הבאה.</div>
+    </div>
+  </div>
+
+  <!-- ===================== MAIN APP ===================== -->
+  <div id="mainScreen" class="hidden">
+    <header class="top">
+      <div class="title-block">
+        <h1>Go On Stop – No Gwene</h1>
+        <div class="sub">אלוני אבא · אתגר קבוצתי</div>
+      </div>
+      <div class="user-chip">
+        <div class="avatar chip-avatar" id="chipAvatar">?</div>
+        <span id="chipName">—</span>
+        <button id="logoutBtn">התנתקות</button>
+      </div>
+    </header>
+
+    <div class="tabs" id="tabs">
+      <button class="tab-btn active" data-tab="dashboard">הבקרה שלי</button>
+      <button class="tab-btn" data-tab="leaderboard">לוח מובילים</button>
+      <button class="tab-btn" data-tab="chizuk">💪 חיזוקים</button>
+      <button class="tab-btn hidden" id="adminTabBtn" data-tab="admin">ניהול</button>
+    </div>
+
+    <!-- ---- DASHBOARD ---- -->
+    <section id="tab-dashboard">
+      <div class="panel">
+        <div class="section-title">👤 עריכת פרופיל</div>
+        <div class="profile-edit">
+          <div class="avatar-upload">
+            <div class="avatar avatar-lg" id="myAvatar">?</div>
+            <input type="file" id="photoInput" accept="image/*">
+            <div class="cam">📷</div>
+          </div>
+          <div class="profile-edit-fields">
+            <div class="name-edit-row">
+              <input type="text" id="myNameInput" placeholder="השם שלך">
+              <button class="btn btn-primary btn-sm" id="saveNameBtn">שמירה</button>
+            </div>
+            <div class="lock-note" id="nameLockNote"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="hero">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#f2c265"/>
+                  <stop offset="100%" stop-color="#e3a542"/>
+                </linearGradient>
+              </defs>
+              <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+              <circle class="ring-fg" id="ringFg" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="264"></circle>
+            </svg>
+            <div class="ring-center">
+              <div class="streak-num tabular" id="streakNum">0</div>
+              <div class="streak-label">ימי רצף</div>
+            </div>
+          </div>
+
+          <div class="timer-block">
+            <div class="timer-label">זמן מתחילת האתגר</div>
+            <div class="timer-grid">
+              <div class="timer-cell"><div class="num tabular" id="tDays">0</div><div class="unit">ימים</div></div>
+              <div class="timer-cell"><div class="num tabular" id="tHours">0</div><div class="unit">שעות</div></div>
+              <div class="timer-cell"><div class="num tabular" id="tMins">0</div><div class="unit">דקות</div></div>
+              <div class="timer-cell"><div class="num tabular" id="tSecs">0</div><div class="unit">שניות</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-row">
+          <div class="score-item"><div class="val tabular" id="baseScore">0</div><div class="lbl">ניקוד בסיס</div></div>
+          <div class="score-item"><div class="val tabular" id="bonusScore">0</div><div class="lbl">ניקוד בונוס</div></div>
+          <div class="score-item total"><div class="val tabular" id="totalScore">0</div><div class="lbl">סה"כ ניקוד</div></div>
+        </div>
+
+        <div class="break-row">
+          <p>נשברת? אל תתבייש — מתחילים שוב, זה חלק מהדרך.</p>
+          <button id="breakBtn" class="btn btn-danger">💔 נשברתי</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">📬 הודעות עידוד שקיבלת</div>
+        <div class="inbox-list" id="inboxList">
+          <div class="empty-state">עדיין לא התקבלו הודעות עידוד</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- LEADERBOARD ---- -->
+    <section id="tab-leaderboard" class="hidden">
+      <div class="panel">
+        <div class="section-title">🏆 לוח מובילים בזמן אמת</div>
+        <div id="leaderboardList"></div>
+      </div>
+    </section>
+
+    <!-- ---- CHIZUK / REINFORCEMENT ---- -->
+    <section id="tab-chizuk" class="hidden">
+      <div class="panel chizuk-quote-panel">
+        <div class="section-title">✨ מחשבה לרגע הזה</div>
+        <div class="chizuk-quote-box">
+          <div class="chizuk-quote-text" id="randomQuoteText">לחצו על הכפתור לקבלת חיזוק</div>
+          <div class="chizuk-quote-src" id="randomQuoteSrc"></div>
+        </div>
+        <button class="btn btn-primary" id="newQuoteBtn" style="margin-top:14px;">🔄 חיזוק נוסף</button>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">📖 פסוקים לחיזוק ולמחשבה</div>
+        <div class="verse-card">
+          <div class="verse-text">"נָצֹר לְשׁוֹנְךָ מֵרָע וּשְׂפָתֶיךָ מִדַּבֵּר מִרְמָה. סוּר מֵרָע וַעֲשֵׂה טוֹב בַּקֵּשׁ שָׁלוֹם וְרָדְפֵהוּ."</div>
+          <div class="verse-src">תהילים ל"ד, י"ד-ט"ו</div>
+          <div class="verse-note">הדרך לשמירה על טהרה מתחילה בסור מרע – בהתרחקות מהפיתוי, וממשיכה בעשיית טוב ובמילוי הזמן בעשייה חיובית.</div>
+        </div>
+        <div class="verse-card">
+          <div class="verse-text">"קְדֹשִׁים תִּהְיוּ כִּי קָדוֹשׁ אֲנִי ה' אֱלֹקֵיכֶם."</div>
+          <div class="verse-src">ויקרא יט, ב</div>
+          <div class="verse-note">אנחנו מוזמנים לחיים של קדושה — לא כעונש, אלא כהזדמנות להידמות לבורא.</div>
+        </div>
+        <div class="verse-card">
+          <div class="verse-text">"מִכָּל מִשְׁמָר נְצֹר לִבֶּךָ כִּי מִמֶּנּוּ תּוֹצְאוֹת חַיִּים."</div>
+          <div class="verse-src">משלי ד, כג</div>
+          <div class="verse-note">הלב שלנו הוא המקור לכל מה שאנחנו עושים — שמירה עליו היא שמירה על כל החיים שלנו.</div>
+        </div>
+        <div class="verse-card">
+          <div class="verse-text">"לֵב טָהוֹר בְּרָא לִי אֱלֹקִים וְרוּחַ נָכוֹן חַדֵּשׁ בְּקִרְבִּי."</div>
+          <div class="verse-src">תהלים נא, יב</div>
+          <div class="verse-note">גם דוד המלך נפל וקם — הדלת לחזרה וטהרה תמיד פתוחה, בכל רגע ובכל יום מחדש.</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">🕯️ מחשבות מתורת ישראל</div>
+        <div class="teaching-list">
+          <div class="teaching-item">
+            <div class="t-title">כוח ההרגל</div>
+            <div class="t-body">הרמב"ם מלמד שהאדם נבנה על ידי הרגליו — כל פעם שאנחנו מתגברים על יצר, אנחנו לא רק "לא עושים עבירה", אלא ממש בונים בתוכנו הרגל חדש של שליטה עצמית וחוזק אופי.</div>
+          </div>
+          <div class="teaching-item">
+            <div class="t-title">שבירת התאווה והגברת השכל</div>
+            <div class="t-body">חכמי המוסר והחסידות מלמדים כי מלחמת היצר היא המאבק בין הרגש והתאווה הרגעית לבין השכל והנשמה. ככל שהאדם מנהיג את חייו לפי השכל והערכים, הוא משתחרר מהשתעבדות לדחפים חולפים.</div>
+          </div>
+          <div class="teaching-item">
+            <div class="t-title">כל ניצחון קטן נשאר לנצח</div>
+            <div class="t-body">מלמדים חז"ל שכל רגע של התגברות על יצר אינו הולך לאיבוד — הוא נחקק בנפש האדם ובונה בו כוח פנימי שמלווה אותו גם הרבה אחרי הרגע עצמו.</div>
+          </div>
+          <div class="teaching-item">
+            <div class="t-title">התשובה תמיד פתוחה</div>
+            <div class="t-body">גם מי שנכשל פעמים רבות מוזמן להתחיל שוב. אין "יותר מדי מאוחר" — כל רגע הוא הזדמנות חדשה לבחור אחרת, וזו בדיוק המשמעות של כפתור "נשברתי" באתגר הזה: לא כישלון סופי, אלא התחלה חדשה.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">🎯 בשביל מה זה שווה את זה</div>
+        <ul class="reason-list">
+          <li>ראש פנוי, ריכוז וזיכרון טובים יותר</li>
+          <li>כבוד עצמי ותחושת שליטה על החיים שלך</li>
+          <li>קרבה אמיתית יותר לבן/בת הזוג בעתיד, בלי השוואות מזיקות</li>
+          <li>חופש מהרגל שמנהל אותך, במקום שאתה תנהל אותו</li>
+          <li>קרבה רוחנית ותחושת משמעות עמוקה יותר</li>
+          <li>אנרגיה פנויה להשקיע במה שבאמת חשוב לך</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ---- ADMIN ---- -->
+    <section id="tab-admin" class="hidden">
+      <div class="panel">
+        <div class="section-title">⚙️ ניהול משתתפים</div>
+        <div id="adminList"></div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===== Encourage Modal ===== -->
+<div class="modal-backdrop hidden" id="encourageModal">
+  <div class="modal">
+    <h3>📣 שליחת עידוד</h3>
+    <div class="modal-sub">שולח עידוד ל<span id="encourageTargetName">-</span>. תקבל 50 נקודות בונוס!</div>
+    <div class="phrase-list" id="phraseList"></div>
+    <textarea id="customPhrase" placeholder="או כתוב הודעה אישית משלך..."></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelEncourage">ביטול</button>
+      <button class="btn btn-primary" id="sendEncourage">שליחה</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Break Confirm Modal ===== -->
+<div class="modal-backdrop hidden" id="breakModal">
+  <div class="modal">
+    <h3>💔 איפוס האתגר</h3>
+    <div class="modal-sub">האם אתה בטוח? הפעולה תאפס את הטיימר, הרצף וניקוד הבונוס שלך לאפס. ניקוד הבסיס יתחיל להיספר מחדש מעכשיו.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelBreak">ביטול</button>
+      <button class="btn btn-danger" id="confirmBreak">כן, נשברתי</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Profile View Modal ===== -->
+<div class="modal-backdrop hidden" id="profileViewModal">
+  <div class="modal">
+    <div class="profile-view-head">
+      <div class="avatar avatar-lg" id="pvAvatar">?</div>
+      <div>
+        <div class="profile-view-name" id="pvName">-</div>
+        <div class="profile-view-meta" id="pvPhone">-</div>
+      </div>
+    </div>
+    <div class="profile-stats-grid">
+      <div class="profile-stat"><div class="v" id="pvStreak">0</div><div class="l">ימי רצף</div></div>
+      <div class="profile-stat"><div class="v" id="pvTotal">0</div><div class="l">סה"כ נקודות</div></div>
+      <div class="profile-stat"><div class="v" id="pvBonus">0</div><div class="l">בונוס</div></div>
+    </div>
+    <div class="profile-timer">
+      <div class="cell"><div class="num tabular" id="pvDays">0</div><div class="unit">ימים</div></div>
+      <div class="cell"><div class="num tabular" id="pvHours">0</div><div class="unit">שעות</div></div>
+      <div class="cell"><div class="num tabular" id="pvMins">0</div><div class="unit">דקות</div></div>
+      <div class="cell"><div class="num tabular" id="pvSecs">0</div><div class="unit">שניות</div></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="closeProfileView">סגירה</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, setDoc, getDoc, updateDoc, deleteDoc,
+  arrayUnion, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd8edyyW3JLtakSSKwzu5KdNSHXiSER94",
+  authDomain: "aloneiabbago-on.firebaseapp.com",
+  projectId: "aloneiabbago-on",
+  storageBucket: "aloneiabbago-on.firebasestorage.app",
+  messagingSenderId: "213608542610",
+  appId: "1:213608542610:web:442c78168d7b763d99514b",
+  measurementId: "G-HJ22C4JM50"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const usersCol = collection(db, "users");
+
+const ADMIN_PASSWORD = "4468800";
+const LS_KEY = "abba_gostop_phone";
+
+const ENCOURAGE_PHRASES = [
+  "כל הכבוד! אתה חזק מכפי שאתה חושב 💪",
+  "יום נוסף, ניצחון נוסף. תמשיך ככה!",
+  "אני גאה בך על ההתמדה שלך 🙌",
+  "זכור למה התחלת. תישאר שם.",
+  "אתגר קשה שווה תוצאה גדולה. יאללה!",
+  "הרצף שלך מרשים, אל תעצור עכשיו!",
+  "אנחנו בזה ביחד, כל הכבוד על החוזק 🔥",
+  "עוד יום, עוד צעד קדימה. גאה בך!"
+];
+
+let currentUser = null;      // {phone, name, isAdmin}
+let currentUserData = null;  // firestore doc data for current user
+let allUsersCache = [];      // [{id, ...data}]
+let selectedPhrase = null;
+let encourageTargetId = null;
+let tickInterval = null;
+
+// ---------------- OneSignal Helper (Proxy via Netlify Function) ----------------
+async function sendPushNotification(targetPhone, senderName, messageText) {
   try {
-    const data = JSON.parse(event.body);
-    // קבלת הפרמטרים מהלקוח (תומך גם במבנה הישן וגם בחדש)
-    const { targetPhone, senderName, messageText, contents, headings, include_player_ids } = data;
-
-    const restApiKey = process.env.ONESIGNAL_REST_API_KEY;
-    // עדיף לשמור את ה-App ID במשתני הסביבה או כסחור קבוע פה
-    const appId = process.env.ONESIGNAL_APP_ID || data.appId; 
-
-    if (!restApiKey || !appId) {
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({ error: 'Missing ONESIGNAL_REST_API_KEY or ONESIGNAL_APP_ID' })
-      };
-    }
-
-    const payload = {
-      app_id: appId,
-      contents: contents || { en: messageText || "Notification" },
-      headings: headings || { en: senderName || "Notice" }
-    };
-
-    if (include_player_ids && include_player_ids.length > 0) {
-      payload.include_player_ids = include_player_ids;
-    } else {
-      payload.included_segments = ["Subscribers"];
-    }
-
-    const response = await fetch('https://onesignal.com/api/v1/notifications', {
-      method: 'POST',
+    const response = await fetch("/.netlify/functions/send-notification", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Authorization': `Basic ${restApiKey}`
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        targetPhone,
+        senderName,
+        messageText
+      })
+    });
+    const result = await response.json();
+    console.log("Push Notification Result:", result);
+  } catch (err) {
+    console.error("שגיאה בשליחת התראת Push:", err);
+  }
+}
+
+// ---------------- utils ----------------
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+function computeStats(userData){
+  const start = userData.startTime || Date.now();
+  const elapsedMs = Math.max(0, Date.now() - start);
+  const totalSeconds = Math.floor(elapsedMs/1000);
+  const days = Math.floor(totalSeconds/86400);
+  const hours = Math.floor((totalSeconds%86400)/3600);
+  const mins = Math.floor((totalSeconds%3600)/60);
+  const secs = totalSeconds%60;
+  const elapsedHoursTotal = elapsedMs/3600000;
+  const fullDays = Math.floor(elapsedHoursTotal/24); // streak
+  const baseScore = fullDays * 100;
+  const bonus = userData.bonusPoints || 0;
+  const total = baseScore + bonus;
+  const ringPct = (elapsedHoursTotal % 24) / 24; // progress toward next 24h/100pts
+  return {days,hours,mins,secs,fullDays,baseScore,bonus,total,ringPct};
+}
+function normalizePhone(p){
+  return (p||"").trim().replace(/[\s-]/g,"");
+}
+function initialsColor(name){
+  const colors = ['#e3a542','#6f9c86','#c1554d','#5b7fa6','#9c6f8e','#a67b34'];
+  let hash = 0;
+  for(let i=0;i<(name||'').length;i++) hash = (name.charCodeAt ? name.charCodeAt(i) : 0) + hash;
+  return colors[Math.abs(hash) % colors.length];
+}
+function avatarHtml(user, sizeClass){
+  const name = user?.name || '?';
+  const initial = name.trim().charAt(0) || '?';
+  if(user?.photoURL){
+    return `<img class="avatar ${sizeClass}" src="${user.photoURL}" alt="${escapeHtml(name)}">`;
+  }
+  return `<div class="avatar ${sizeClass}" style="background:${initialsColor(name)}">${escapeHtml(initial)}</div>`;
+}
+function setAvatarEl(el, user, sizeClass){
+  const name = user?.name || '?';
+  const initial = name.trim().charAt(0) || '?';
+  el.className = `avatar ${sizeClass}`;
+  if(user?.photoURL){
+    el.style.background = 'transparent';
+    el.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = user.photoURL;
+    img.style.width='100%';img.style.height='100%';img.style.borderRadius='50%';img.style.objectFit='cover';
+    el.appendChild(img);
+  } else {
+    el.style.background = initialsColor(name);
+    el.textContent = initial;
+  }
+}
+function resizeImageToDataUrl(file, maxDim=220){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let w = img.width, h = img.height;
+        if(w>h){ if(w>maxDim){h=Math.round(h*maxDim/w);w=maxDim;} }
+        else { if(h>maxDim){w=Math.round(w*maxDim/h);h=maxDim;} }
+        const canvas = document.createElement('canvas');
+        canvas.width=w;canvas.height=h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg',0.75));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ---------------- login flow ----------------
+const loginScreen = document.getElementById('loginScreen');
+const mainScreen = document.getElementById('mainScreen');
+const loginForm = document.getElementById('loginForm');
+const nameInput = document.getElementById('nameInput');
+const phoneInput = document.getElementById('phoneInput');
+
+loginForm.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = nameInput.value.trim();
+  const phoneRaw = phoneInput.value;
+  const phone = normalizePhone(phoneRaw);
+  if(!phone){ showToast("נא להזין מספר טלפון"); return; }
+
+  if(phone === ADMIN_PASSWORD){
+    currentUser = { phone, name: name || "מנהל", isAdmin:true };
+    localStorage.setItem(LS_KEY, phone);
+    await enterApp();
+    return;
+  }
+  if(!name){ showToast("נא להזין שם מלא"); return; }
+
+  try{
+    const ref = doc(db, "users", phone);
+    const snap = await getDoc(ref);
+    if(snap.exists()){
+      currentUser = { phone, name: snap.data().name || name, isAdmin:false };
+    } else {
+      const newDoc = {
+        name, phone, startTime: Date.now(),
+        bonusPoints: 0, inbox: [], lastEncourageDate: null,
+        photoURL: "", lastNameChange: null
+      };
+      await setDoc(ref, newDoc);
+      currentUser = { phone, name, isAdmin:false };
+    }
+    localStorage.setItem(LS_KEY, phone);
+    await enterApp();
+  }catch(err){
+    console.error(err);
+    showToast("שגיאה בהתחברות, נסה שוב");
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+  localStorage.removeItem(LS_KEY);
+  location.reload();
+});
+
+async function tryAutoLogin(){
+  const saved = localStorage.getItem(LS_KEY);
+  if(!saved) return;
+  if(saved === ADMIN_PASSWORD){
+    currentUser = { phone: saved, name:"מנהל", isAdmin:true };
+    await enterApp();
+    return;
+  }
+  try{
+    const ref = doc(db,"users",saved);
+    const snap = await getDoc(ref);
+    if(snap.exists()){
+      currentUser = { phone: saved, name: snap.data().name, isAdmin:false };
+      await enterApp();
+    } else {
+      localStorage.removeItem(LS_KEY);
+    }
+  }catch(err){
+    console.error(err);
+  }
+}
+
+async function enterApp(){
+  loginScreen.classList.add('hidden');
+  mainScreen.classList.remove('hidden');
+  document.getElementById('chipName').textContent = currentUser.name;
+
+  // Login user to OneSignal with their phone number
+  if (window.OneSignalDeferred && currentUser && currentUser.phone && !currentUser.isAdmin) {
+    window.OneSignalDeferred.push(function(OneSignal) {
+      OneSignal.login(currentUser.phone);
+    });
+  }
+
+  if(currentUser.isAdmin){
+    document.getElementById('adminTabBtn').classList.remove('hidden');
+    document.querySelector('#tab-dashboard .panel').classList.add('hidden');
+    switchTab('admin');
+  }
+  setupUsersListener();
+  if(tickInterval) clearInterval(tickInterval);
+  tickInterval = setInterval(renderDashboard, 1000);
+}
+
+// ---------------- tabs ----------------
+document.getElementById('tabs').addEventListener('click',(e)=>{
+  const btn = e.target.closest('.tab-btn');
+  if(!btn) return;
+  switchTab(btn.dataset.tab);
+});
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  ['dashboard','leaderboard','chizuk','admin'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('hidden', t!==tab);
+  });
+}
+
+// ---------------- realtime users listener ----------------
+function setupUsersListener(){
+  onSnapshot(usersCol, (snapshot)=>{
+    allUsersCache = [];
+    snapshot.forEach(d=>{
+      allUsersCache.push({id:d.id, ...d.data()});
+    });
+    if(!currentUser.isAdmin){
+      const me = allUsersCache.find(u=>u.id===currentUser.phone);
+      if(me) currentUserData = me;
+    }
+    renderDashboard();
+    renderLeaderboard();
+    if(currentUser.isAdmin) renderAdmin();
+  }, (err)=>{
+    console.error(err);
+    showToast("שגיאת חיבור ל-Firestore");
+  });
+}
+
+// ---------------- dashboard render ----------------
+function renderDashboard(){
+  if(currentUser.isAdmin || !currentUserData) return;
+  const s = computeStats(currentUserData);
+  document.getElementById('tDays').textContent = s.days;
+  document.getElementById('tHours').textContent = String(s.hours).padStart(2,'0');
+  document.getElementById('tMins').textContent = String(s.mins).padStart(2,'0');
+  document.getElementById('tSecs').textContent = String(s.secs).padStart(2,'0');
+  document.getElementById('streakNum').textContent = s.fullDays;
+  document.getElementById('baseScore').textContent = s.baseScore;
+  document.getElementById('bonusScore').textContent = s.bonus;
+  document.getElementById('totalScore').textContent = s.total;
+
+  const ring = document.getElementById('ringFg');
+  const circumference = 264;
+  const offset = circumference - (s.ringPct * circumference);
+  ring.style.strokeDashoffset = offset;
+
+  renderInbox(currentUserData.inbox || []);
+
+  // sync profile edit UI
+  setAvatarEl(document.getElementById('myAvatar'), currentUserData, 'avatar-lg');
+  setAvatarEl(document.getElementById('chipAvatar'), currentUserData, 'chip-avatar');
+  if(document.activeElement !== document.getElementById('myNameInput')){
+    document.getElementById('myNameInput').value = currentUserData.name || '';
+  }
+  updateNameLockUI();
+}
+
+function updateNameLockUI(){
+  const note = document.getElementById('nameLockNote');
+  const input = document.getElementById('myNameInput');
+  const btn = document.getElementById('saveNameBtn');
+  const last = currentUserData?.lastNameChange;
+  if(last){
+    const elapsed = Date.now() - last;
+    const remain = 24*3600*1000 - elapsed;
+    if(remain > 0){
+      const h = Math.floor(remain/3600000);
+      const m = Math.floor((remain%3600000)/60000);
+      note.textContent = `ניתן לשנות שם שוב בעוד ${h} שעות ו-${m} דקות`;
+      note.classList.add('locked');
+      input.disabled = true;
+      btn.disabled = true;
+      return;
+    }
+  }
+  note.textContent = 'ניתן לשנות את השם פעם ביום';
+  note.classList.remove('locked');
+  input.disabled = false;
+  btn.disabled = false;
+}
+
+function renderInbox(inbox){
+  const list = document.getElementById('inboxList');
+  if(!inbox || inbox.length===0){
+    list.innerHTML = '<div class="empty-state">עדיין לא התקבלו הודעות עידוד</div>';
+    return;
+  }
+  const sorted = [...inbox].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  list.innerHTML = sorted.map(m=>{
+    const date = m.ts ? new Date(m.ts).toLocaleString('he-IL') : '';
+    return `<div class="inbox-item">
+      <div class="from">מאת: ${escapeHtml(m.from||'משתתף')}</div>
+      <div class="txt">${escapeHtml(m.text||'')}</div>
+      <div class="time">${date}</div>
+    </div>`;
+  }).join('');
+}
+
+// ---------------- leaderboard render ----------------
+function renderLeaderboard(){
+  const list = document.getElementById('leaderboardList');
+  const participants = allUsersCache.filter(u=>u.id !== ADMIN_PASSWORD);
+  const withStats = participants.map(u=>({...u, stats: computeStats(u)}));
+  withStats.sort((a,b)=> b.stats.total - a.stats.total);
+
+  const myLastEncourage = currentUserData ? currentUserData.lastEncourageDate : null;
+  const usedToday = myLastEncourage === todayStr();
+
+  list.innerHTML = withStats.map((u, idx)=>{
+    const rank = idx+1;
+    const isMe = !currentUser.isAdmin && u.id === currentUser.phone;
+    let rankClass = '';
+    if(rank===1) rankClass='top1'; else if(rank===2) rankClass='top2'; else if(rank===3) rankClass='top3';
+    
+    let btnDisabledAttr = '';
+    let btnText = '📣 עודד';
+
+    if (currentUser.isAdmin || isMe) {
+      btnDisabledAttr = 'disabled';
+      btnText = isMe ? 'זה אתה' : '📣 עודד';
+    } else if (usedToday) {
+      btnDisabledAttr = 'disabled';
+      btnText = '🔒 נוצל היום';
+    }
+
+    return `<div class="lb-row ${isMe?'me':''}">
+      <div class="lb-identity">
+        <div class="lb-rank ${rankClass}">${rank}</div>
+        <div class="lb-name-link" data-profile="${u.id}" style="display:flex;flex-shrink:0;">${avatarHtml(u, 'avatar-md')}</div>
+        <div class="lb-info">
+          <div class="lb-name lb-name-link" data-profile="${u.id}">${escapeHtml(u.name||'ללא שם')}${isMe?' (אתה)':''}</div>
+          <div class="lb-meta">🔥 ${u.stats.fullDays} ימי רצף</div>
+        </div>
+      </div>
+      <div class="lb-actions">
+        <div class="lb-score">
+          <div class="n">${u.stats.total}</div>
+          <div class="l">נקודות</div>
+        </div>
+        ${currentUser.isAdmin ? '' : `<button class="encourage-btn" data-target="${u.id}" data-name="${escapeHtml(u.name||'')}" ${btnDisabledAttr}>${btnText}</button>`}
+      </div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.lb-name-link').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      openProfileView(el.dataset.profile);
+    });
+  });
+
+  list.querySelectorAll('.encourage-btn:not([disabled])').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      openEncourageModal(btn.dataset.target, btn.dataset.name);
+    });
+  });
+}
+
+// ---------------- encourage modal ----------------
+const encourageModal = document.getElementById('encourageModal');
+const phraseListEl = document.getElementById('phraseList');
+const customPhraseEl = document.getElementById('customPhrase');
+
+function openEncourageModal(targetId, targetName){
+  encourageTargetId = targetId;
+  selectedPhrase = null;
+  customPhraseEl.value = '';
+  document.getElementById('encourageTargetName').textContent = ' ' + targetName;
+  phraseListEl.innerHTML = ENCOURAGE_PHRASES.map((p,i)=>
+    `<button type="button" class="phrase-opt" data-idx="${i}">${p}</button>`
+  ).join('');
+  phraseListEl.querySelectorAll('.phrase-opt').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      phraseListEl.querySelectorAll('.phrase-opt').forEach(o=>o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedPhrase = ENCOURAGE_PHRASES[el.dataset.idx];
+      customPhraseEl.value = '';
+    });
+  });
+  encourageModal.classList.remove('hidden');
+}
+document.getElementById('cancelEncourage').addEventListener('click', ()=>{
+  encourageModal.classList.add('hidden');
+});
+customPhraseEl.addEventListener('input', ()=>{
+  if(customPhraseEl.value.trim()){
+    selectedPhrase = null;
+    phraseListEl.querySelectorAll('.phrase-opt').forEach(o=>o.classList.remove('selected'));
+  }
+});
+
+document.getElementById('sendEncourage').addEventListener('click', async ()=>{
+  const text = customPhraseEl.value.trim() || selectedPhrase;
+  if(!text){ showToast("בחר משפט או כתוב הודעה"); return; }
+  if(!encourageTargetId) return;
+
+  const todayKey = todayStr();
+  if(currentUserData && currentUserData.lastEncourageDate === todayKey){
+    showToast("כבר עודדת מישהו היום 🙂");
+    encourageModal.classList.add('hidden');
+    return;
+  }
+
+  try{
+    const targetRef = doc(db,"users",encourageTargetId);
+    await updateDoc(targetRef, {
+      inbox: arrayUnion({ from: currentUser.name, text, ts: Date.now() })
+    });
+    const meRef = doc(db,"users",currentUser.phone);
+    const newBonus = (currentUserData?.bonusPoints || 0) + 50;
+    await updateDoc(meRef, {
+      bonusPoints: newBonus,
+      lastEncourageDate: todayKey
     });
 
-    const result = await response.json();
+    // Send Push Notification via Proxy
+    sendPushNotification(encourageTargetId, currentUser.name, text);
 
-    return {
-      statusCode: response.status,
-      headers,
-      body: JSON.stringify(result)
-    };
-  } catch (error) {
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: error.message })
-    };
+    showToast("העידוד נשלח! קיבלת 50 נקודות בונוס 🎉");
+    encourageModal.classList.add('hidden');
+  }catch(err){
+    console.error(err);
+    showToast("שגיאה בשליחת העידוד");
   }
-};
+});
+
+// ---------------- break flow ----------------
+const breakModal = document.getElementById('breakModal');
+document.getElementById('breakBtn').addEventListener('click', ()=>{
+  breakModal.classList.remove('hidden');
+});
+document.getElementById('cancelBreak').addEventListener('click', ()=>{
+  breakModal.classList.add('hidden');
+});
+document.getElementById('confirmBreak').addEventListener('click', async ()=>{
+  try{
+    const ref = doc(db,"users",currentUser.phone);
+    await updateDoc(ref, {
+      startTime: Date.now(),
+      bonusPoints: 0
+    });
+    showToast("האתגר אופס. בהצלחה בהתחלה החדשה 💪");
+  }catch(err){
+    console.error(err);
+    showToast("שגיאה באיפוס");
+  }
+  breakModal.classList.add('hidden');
+});
+
+// ---------------- admin ----------------
+function renderAdmin(){
+  const list = document.getElementById('adminList');
+  const participants = allUsersCache.filter(u=>u.id !== ADMIN_PASSWORD);
+  participants.sort((a,b)=> (a.name||'').localeCompare(b.name||'','he'));
+  list.innerHTML = participants.map(u=>{
+    const stats = computeStats(u);
+    return `<div class="admin-row">
+      <div class="avatar-upload admin-avatar-upload">
+        ${avatarHtml(u, 'avatar-sm')}
+        <input type="file" accept="image/*" class="admin-photo-input" data-photo-id="${u.id}">
+        <div class="cam cam-sm">📷</div>
+      </div>
+      <span class="phone">${escapeHtml(u.phone||u.id)}</span>
+      <input type="text" class="name-input" value="${escapeHtml(u.name||'')}" data-name-id="${u.id}">
+      <div class="points-wrap">
+        <label>בונוס (בסיס: ${stats.baseScore})</label>
+        <input type="number" class="points-input" value="${u.bonusPoints||0}" data-points-id="${u.id}">
+      </div>
+      <button class="btn btn-sm btn-primary save-row" data-id="${u.id}">שמירה</button>
+      <button class="btn-delete delete-row" data-id="${u.id}" data-name="${escapeHtml(u.name||'')}">🗑️ מחיקה</button>
+    </div>`;
+  }).join('') || '<div class="empty-state">אין משתתפים רשומים עדיין</div>';
+
+  list.querySelectorAll('.admin-photo-input').forEach(input=>{
+    input.addEventListener('change', async (e)=>{
+      const file = e.target.files[0];
+      const id = input.dataset.photoId;
+      if(!file) return;
+      if(!file.type.startsWith('image/')){ showToast("נא לבחור קובץ תמונה"); return; }
+      try{
+        const dataUrl = await resizeImageToDataUrl(file, 220);
+        await updateDoc(doc(db,"users",id), { photoURL: dataUrl });
+        showToast("תמונת הפרופיל עודכנה");
+      }catch(err){
+        console.error(err);
+        showToast("שגיאה בהעלאת התמונה");
+      }
+      e.target.value = '';
+    });
+  });
+
+  list.querySelectorAll('.save-row').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.id;
+      const nameInputEl = list.querySelector(`input[data-name-id="${id}"]`);
+      const pointsInputEl = list.querySelector(`input[data-points-id="${id}"]`);
+      const newName = nameInputEl.value.trim();
+      const newBonus = parseInt(pointsInputEl.value, 10);
+      if(!newName){ showToast("שם לא יכול להיות ריק"); return; }
+      if(Number.isNaN(newBonus)){ showToast("ניקוד הבונוס חייב להיות מספר"); return; }
+      try{
+        await updateDoc(doc(db,"users",id), { name: newName, bonusPoints: newBonus });
+        showToast("הפרטים עודכנו בהצלחה");
+      }catch(err){
+        console.error(err);
+        showToast("שגיאה בעדכון הפרטים");
+      }
+    });
+  });
+
+  list.querySelectorAll('.delete-row').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.id;
+      const name = btn.dataset.name || id;
+      const ok = confirm(`למחוק לצמיתות את ${name}? הפעולה אינה הפיכה.`);
+      if(!ok) return;
+      try{
+        await deleteDoc(doc(db,"users",id));
+        showToast("המשתמש נמחק בהצלחה");
+      }catch(err){
+        console.error(err);
+        showToast("שגיאה במחיקת המשתמש");
+      }
+    });
+  });
+}
+
+// ---------------- profile edit (photo + name) ----------------
+document.getElementById('photoInput').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')){ showToast("נא לבחור קובץ תמונה"); return; }
+  try{
+    const dataUrl = await resizeImageToDataUrl(file, 220);
+    await updateDoc(doc(db,"users",currentUser.phone), { photoURL: dataUrl });
+    showToast("תמונת הפרופיל עודכנה!");
+  }catch(err){
+    console.error(err);
+    showToast("שגיאה בהעלאת התמונה");
+  }
+  e.target.value = '';
+});
+
+document.getElementById('saveNameBtn').addEventListener('click', async ()=>{
+  const newName = document.getElementById('myNameInput').value.trim();
+  if(!newName){ showToast("השם לא יכול להיות ריק"); return; }
+  const last = currentUserData?.lastNameChange;
+  if(last && (Date.now() - last) < 24*3600*1000){
+    showToast("ניתן לשנות שם רק פעם ב-24 שעות");
+    return;
+  }
+  try{
+    await updateDoc(doc(db,"users",currentUser.phone), {
+      name: newName,
+      lastNameChange: Date.now()
+    });
+    currentUser.name = newName;
+    document.getElementById('chipName').textContent = newName;
+    showToast("השם עודכן בהצלחה!");
+  }catch(err){
+    console.error(err);
+    showToast("שגיאה בעדכון השם");
+  }
+});
+
+// ---------------- profile view modal (other participants) ----------------
+const profileViewModal = document.getElementById('profileViewModal');
+let profileViewUserId = null;
+let profileViewInterval = null;
+
+function openProfileView(userId){
+  const user = allUsersCache.find(u=>u.id===userId);
+  if(!user) return;
+  profileViewUserId = userId;
+  setAvatarEl(document.getElementById('pvAvatar'), user, 'avatar-lg');
+  document.getElementById('pvName').textContent = user.name || 'ללא שם';
+  document.getElementById('pvPhone').textContent = user.phone || user.id;
+  renderProfileView();
+  if(profileViewInterval) clearInterval(profileViewInterval);
+  profileViewInterval = setInterval(renderProfileView, 1000);
+  profileViewModal.classList.remove('hidden');
+}
+function renderProfileView(){
+  const user = allUsersCache.find(u=>u.id===profileViewUserId);
+  if(!user){ closeProfileView(); return; }
+  const s = computeStats(user);
+  document.getElementById('pvStreak').textContent = s.fullDays;
+  document.getElementById('pvTotal').textContent = s.total;
+  document.getElementById('pvBonus').textContent = s.bonus;
+  document.getElementById('pvDays').textContent = s.days;
+  document.getElementById('pvHours').textContent = String(s.hours).padStart(2,'0');
+  document.getElementById('pvMins').textContent = String(s.mins).padStart(2,'0');
+  document.getElementById('pvSecs').textContent = String(s.secs).padStart(2,'0');
+}
+function closeProfileView(){
+  profileViewModal.classList.add('hidden');
+  if(profileViewInterval) clearInterval(profileViewInterval);
+  profileViewUserId = null;
+}
+document.getElementById('closeProfileView').addEventListener('click', closeProfileView);
+profileViewModal.addEventListener('click', (e)=>{
+  if(e.target === profileViewModal) closeProfileView();
+});
+
+// ---------------- chizuk / reinforcement quotes ----------------
+const CHIZUK_QUOTES = [
+  { text: "כל רגע שבו אתה עוצר ובוחר אחרת — הוא ניצחון שנשאר איתך לתמיד, גם אם איש לא רואה אותו.", src: "" },
+  { text: "היצר מדבר בקול חזק רק ברגע עצמו. תן לרגע הזה לעבור, והוא ייחלש מעצמו.", src: "" },
+  { text: "אתה לא נלחם לבד — כל מי שנמצא איתך באתגר הזה מרגיש בדיוק את אותם רגעים.", src: "" },
+  { text: "קדושים תהיו כי קדוש אני ה' אלוקיכם — זו לא רק מצווה, זו הזמנה להידמות לבורא עולם.", src: "ויקרא יט, ב" },
+  { text: "מכל משמר נצור לבך כי ממנו תוצאות חיים — הלב שלך שווה שמירה.", src: "משלי ד, כג" },
+  { text: "נפילה היא לא הסוף של הסיפור. גם דוד המלך נפל וקם, וכתב לנו שיר על לב טהור שנברא מחדש.", src: "בהשראת תהלים נא" },
+  { text: "כל פעם שאתה מתגבר, אתה לא רק נמנע מעבירה — אתה בונה בתוכך אדם חזק יותר.", src: "" },
+  { text: "השאלה היא לא 'האם אני מושלם' אלא 'האם אני ממשיך לנסות'. וזה בדיוק מה שאתה עושה עכשיו.", src: "" },
+  { text: "תחשוב על הרגע הזה בעוד שנה — תרצה להיזכר שהתגברת, לא שוויתרת.", src: "" },
+  { text: "החופש האמיתי הוא לא לעשות מה שבא לך — הוא לא להיות עבד למה שבא לך.", src: "" },
+  { text: "כל יום נוסף באתגר הוא אבן בניין בזהות חדשה שאתה בונה לעצמך.", src: "" },
+  { text: "אתה בונה כרגע הרגלים שילוו אותך לכל החיים — כולל לזוגיות שלך בעתיד.", src: "" },
+  { text: "אם נפלת — קום, נשום, ותתחיל שוב. בדיוק בשביל זה יש כפתור 'נשברתי' באתגר הזה.", src: "" },
+  { text: "הרמב״ם מלמד שאדם נבנה מהרגליו. כל התגברות היא לבנה נוספת באדם שאתה רוצה להיות.", src: "בהשראת הרמב\"ם, הלכות דעות" },
+  { text: "אתה חזק יותר מהדחף הרגעי הזה. תן לזמן לעבור, ותראה שזה נכון.", src: "" },
+  { text: "נצור לשונך מרע ושפתיך מדבר מרמה. סור מרע ועשה טוב בקש שלום ורדפהו.", src: "תהילים ל\"ד, י\"ד-ט\"ו" },
+  { text: "מלחמת היצר היא המאבק בין התאווה הרגעית לשכל ולנשמה. ככל שתנהיג את חייך לפי השכל, תשתחרר מההשתעבדות לדחפים חולפים.", src: "תורת המוסר והחסידות" }
+];
+
+document.getElementById('newQuoteBtn').addEventListener('click', ()=>{
+  const q = CHIZUK_QUOTES[Math.floor(Math.random()*CHIZUK_QUOTES.length)];
+  document.getElementById('randomQuoteText').textContent = q.text;
+  document.getElementById('randomQuoteSrc').textContent = q.src || '';
+});
+// show one quote by default when tab first loads
+document.getElementById('newQuoteBtn').click();
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+// ---------------- boot ----------------
+tryAutoLogin();
+</script>
+</body>
+</html>
